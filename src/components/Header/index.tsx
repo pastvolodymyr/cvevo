@@ -20,10 +20,10 @@ export const Header = () => {
             href: '/pricing',
             label: 'Pricing',
         },
-        {
-            onClick: handleLogin,
-            label: 'Account',
-        },
+        // {
+        //     onClick: handleLogin,
+        //     label: 'Account',
+        // },
     ];
 
     return (
@@ -36,12 +36,12 @@ export const Header = () => {
                     {
                         links.map(link => (
                             <li key={ link.label }>
-                                {
-                                    link.onClick
-                                        ? <Button text={ link.label } onClick={ link.onClick }/>
-                                        : <LinkButton text={ link.label } href={ link.href }/>
-                                }
-
+                                {/*{*/}
+                                {/*    link.onClick*/}
+                                {/*        ? <Button text={ link.label } onClick={ link.onClick }/>*/}
+                                {/*        : <LinkButton text={ link.label } href={ link.href }/>*/}
+                                {/*}*/}
+                                <LinkButton text={ link.label } href={ link.href }/>
                             </li>
                         ))
                     }
