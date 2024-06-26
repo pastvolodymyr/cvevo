@@ -8,8 +8,7 @@ import styles from './style.module.scss';
 
 export const Header = () => {
     const handleLogin = async () => {
-        'use server'
-
+        'use server';
     };
 
     const links = [
