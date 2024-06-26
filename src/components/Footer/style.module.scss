@@ -1,0 +1,18 @@
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+
+  .footerWrapper {
+    padding: 100px 30px 30px 30px;
+    width: 100%;
+    max-width: 1024px;
+    display: flex;
+    justify-content: space-between;
+
+    p, a {
+      font-size: 16px;
+    }
+  }
+}
