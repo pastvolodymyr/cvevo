@@ -10,6 +10,7 @@
 
     .heroBlock {
       margin-top: 95px;
+      margin-bottom: 75px;
 
       h1, p {
         margin-bottom: 25px;
@@ -17,6 +18,22 @@
 
       p {
         max-width: 450px;
+      }
+    }
+
+    .stepBlock {
+      margin-bottom: 60px;
+
+      h2 {
+        margin-bottom: 20px;
+      }
+
+      p {
+        margin-bottom: 15px;
+      }
+
+      &:nth-child(3),  &:nth-child(4){
+        opacity: 0.3;
       }
     }
   }
