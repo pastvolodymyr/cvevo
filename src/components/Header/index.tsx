@@ -2,15 +2,11 @@ import React from 'react';
 import Link from 'next/link';
 
 import Logo from '@/svg/logo.svg';
-import { Button, LinkButton } from '@/components/UI';
+import { LinkButton } from '@/components/UI';
 
 import styles from './style.module.scss';
 
 export const Header = () => {
-    const handleLogin = async () => {
-        'use server';
-    };
-
     const links = [
         {
             href: '/analyse',
