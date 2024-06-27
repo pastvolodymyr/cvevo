@@ -9,27 +9,16 @@
     width: 100%;
 
     .heroBlock {
-      margin-top: 95px;
-      margin-bottom: 75px;
+      margin-top: 30px;
+      margin-bottom: 35px;
+      padding-bottom: 35px;
+      border-bottom: 1px dashed var(--secondary-color);
 
-      h1, p {
-        margin-bottom: 25px;
+      h1 {
+        margin-bottom: 22px;
       }
-    }
-
-    .stepBlock {
-      margin-bottom: 60px;
-
-      h2 {
-        margin-bottom: 20px;
-      }
-
       p {
-        margin-bottom: 15px;
-      }
-
-      &:nth-child(3),  &:nth-child(4){
-        opacity: 0.3;
+        max-width: 700px;
       }
     }
   }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { LinkButton } from '@/components/UI';
+import { ContentSection, LinkButton } from '@/components/UI';
 
 import styles from './style.module.scss';
 
@@ -9,53 +9,51 @@ export default function Home() {
         <div className={ styles.home }>
             <div className={ styles.homeWrapper }>
                 <div className={ styles.heroBlock }>
-                    <h1>AI-powered CV enhancement tool</h1>
+                    <h1>AI-powered CV analysing tool</h1>
                     <p>
                         Whether you're a recent graduate, a seasoned professional,
-                        or looking to pivot your career, cvevo is here to elevate your CV to the next level!
+                        or looking to pivot your career, cvevo is here to elevate your career to the next level!
                     </p>
                     <LinkButton text={ 'Analyse your CV' } href={ '/analyse' }/>
                 </div>
-                <div className={ styles.faqBlock }>
-                    <div className={ styles.faqSideBlock }>
+                <div className={ styles.sections }>
+                    <ContentSection>
+                        <h2>Features</h2>
+                        <p>
+                            CV analyser - get personalized feedback to refine your resume and catch employers' attention.
+                            <br/>
+                            <br/>
+                            Cover Letters - create unique cover letters tailored to your strengths and job descriptions.
+                            <br/>
+                            <br/>
+                            Interview questions - receive tailored interview questions based on your CV and job description to help you prepare.
+                        </p>
+                        <img src='/images/demonstrate.gif' alt='' />
+                    </ContentSection>
+                    <ContentSection>
+                        <h2>How it works?</h2>
+                        <p>
+                            1. Start by uploading your CV for a thorough analysis and personalized feedback
+                            <br/>
+                            <br/>
+                            2. Provide a short job description to receive customized cover letters and interview questions
+                            <br/>
+                            <br/>
+                            3. Obtain actionable suggestions, tailored cover letters, and targeted interview questions to enhance your job search
+                        </p>
+                    </ContentSection>
+                    <ContentSection>
                         <h2>Why cvevo?</h2>
                         <p>
-                            Our advanced AI analyzes your CV in seconds, identifying key areas for improvement.
+                            Get advice and resources specifically tailored to your career background and aspirations.
+                            <br/>
+                            <br/>
+                            Our intuitive interface ensures you get the results you need quickly and effortlessly.
+                            <br/>
+                            <br/>
+                            Be well-prepared and self-assured with tools designed to help you succeed.
                         </p>
-                        <p>
-                            Receive tailored advice on how to optimize your CV, from formatting tips to content suggestions.
-                        </p>
-                        <p>
-                            Increase your chances of landing your dream job with a CV that highlights your strengths and aligns with industry standards.
-                        </p>
-                    </div>
-                    <div className={ styles.faqSideBlock }>
-                        <h2>How It Works?</h2>
-                        <p>
-                            1. Simply upload your CV in PDF or PNG/JPEG format
-                        </p>
-                        <p>
-                            2. Follow our easy-to-implement suggestions to improve your CV
-                        </p>
-                        <p>
-                            3. Submit your polished CV with confidence and get noticed by top employers
-                        </p>
-                    </div>
-                </div>
-                <div className={ styles.featuresBlock }>
-                    <h2>Features</h2>
-                    <p>
-                        NEW - Ensure your CV passes through Applicant Tracking Systems (ATS)
-                    </p>
-                    <p>
-                        Correct errors and enhance readability
-                    </p>
-                    <p>
-                        Make your CV visually appealing and easy to navigate
-                    </p>
-                    <p>
-                        Tailor your CV to specific roles and industries for maximum impact
-                    </p>
+                    </ContentSection>
                 </div>
             </div>
         </div>

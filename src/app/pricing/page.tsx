@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { ContentSection } from '@/components/UI';
+
 import styles from './style.module.scss';
 
 export default function Pricing() {
@@ -11,25 +13,37 @@ export default function Pricing() {
                     <p>
                         At our service, we believe everyone should have access to top-notch career tools without breaking the bank.
                     </p>
-                    <p>
-                      That’s why our core service is completely free!
-                    </p>
                 </div>
-                <div className={ styles.featuresBlock }>
-                    <h2>Extra Features</h2>
-                    <p>
-                        Unlock additional features by watching short ads while your CV is being analyzed.
-                    </p>
-                    <br/>
-                    <p>These features includes:</p>
-                    <p>1. Cover letter</p>
-                    <p>2. Extra interview questions</p>
-                    <p>3. Interview questions answers</p>
-                    <br/>
-                    <p>
-                      This way, we can keep offering you valuable insights at no cost, with the option to enhance your
-                      experience easily :)
-                    </p>
+                <div className={ styles.plans }>
+                    <div className={ styles.plansDescription }>
+                        <h2>Plans</h2>
+                        <p>
+                            Unlock additional features by watching short ads while your CV is being analyzed.
+                            <br/>
+                            <br/>
+                            This way, we can keep offering you valuable insights at no cost, with the option to enhance your experience.
+                        </p>
+                    </div>
+                    <div className={ styles.plansBlock }>
+                        <ContentSection>
+                            <h2>Free</h2>
+                            <p>
+                                1. Analyse your CV - receive tailored advice on how to optimize your CV, from formatting tips to content suggestions
+                                <br/>
+                                <br/>
+                                2. Interview questions - research 5 potential interview questions you might encounter and prepare to your next interview
+                            </p>
+                        </ContentSection>
+                        <ContentSection>
+                            <h2>Extra (Also free, but with ads)</h2>
+                            <p>
+                                1. Interview questions - research 15 potential interview questions you might encounter and prepare to your next interview.
+                                <br/>
+                                <br/>
+                                2. Cover letter - increase your chances of landing your dream job with a CV that highlights your strengths and aligns with industry standards.
+                            </p>
+                        </ContentSection>
+                    </div>
                 </div>
             </div>
         </div>

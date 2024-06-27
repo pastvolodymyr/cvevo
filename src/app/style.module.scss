@@ -9,47 +9,50 @@
     width: 100%;
 
     .heroBlock {
-      margin-top: 95px;
+      margin-top: 65px;
+      margin-bottom: 95px;
 
-      h1, p {
+      h1 {
+        margin-bottom: 22px;
+      }
+
+      p {
+        max-width: 670px;
         margin-bottom: 25px;
       }
-
-      p {
-        max-width: 520px;
-      }
     }
 
-    .faqBlock {
-      margin-top: 95px;
-      margin-bottom: 60px;
-      display: flex;
-      justify-content: space-between;
+    .sections {
+      margin-top: 60px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
 
-      .faqSideBlock {
-        width: 45%;
-      }
+      section {
+        height: auto;
 
-      @media (max-width: 992px) {
-        flex-direction: column;
+        &:first-child {
+          grid-column: 1 / 2;
+          grid-row: 1 / 3;
+          display: flex;
+          flex-direction: column;
 
-        .faqSideBlock {
-          width: 100%;
-
-          &:first-child {
-            margin-bottom: 60px;
+          p {
+            margin-bottom: 30px;
+            flex: 1;
           }
         }
-      }
-    }
 
-    .faqSideBlock, .featuresBlock {
-      h2 {
-        margin-bottom: 20px;
-      }
+        h2 {
+          margin-bottom: 22px;
+        }
 
-      p {
-        margin-bottom: 15px;
+        img {
+          border-radius: 20px;
+          width: 100%;
+          height: 270px;
+          object-fit: fill;
+        }
       }
     }
   }
