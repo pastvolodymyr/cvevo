@@ -11,7 +11,7 @@ export default function Analyse() {
                 <div className={ styles.heroBlock }>
                     <h1>CV analyser</h1>
                     <p>
-                        Get personalized feedback to refine your resume and catch employers' attention.
+                        Obtain actionable suggestions, tailored cover letters, and targeted interview questions to enhance your job search
                     </p>
                 </div>
                 <Loader />

@@ -1,6 +1,9 @@
 import React from 'react';
 
 import { ContentSection, LinkButton } from '@/components/UI';
+import CvAnalyseIcon from '@/svg/cv_analyse.svg';
+import CoverIcon from '@/svg/cover.svg';
+import QuestionIcon from '@/svg/question.svg';
 
 import styles from './style.module.scss';
 
@@ -9,7 +12,7 @@ export default function Home() {
         <div className={ styles.home }>
             <div className={ styles.homeWrapper }>
                 <div className={ styles.heroBlock }>
-                    <h1>AI-powered CV analysing tool</h1>
+                    <h1>Free AI-powered CV analysing tool</h1>
                     <p>
                         Whether you're a recent graduate, a seasoned professional,
                         or looking to pivot your career, cvevo is here to elevate your career to the next level!
@@ -18,16 +21,23 @@ export default function Home() {
                 </div>
                 <div className={ styles.sections }>
                     <ContentSection>
-                        <h2>Features</h2>
-                        <p>
-                            CV analyser - get personalized feedback to refine your resume and catch employers' attention.
-                            <br/>
-                            <br/>
-                            Cover Letters - create unique cover letters tailored to your strengths and job descriptions.
-                            <br/>
-                            <br/>
-                            Interview questions - receive tailored interview questions based on your CV and job description to help you prepare.
-                        </p>
+                        <div className={styles.textContentPart}>
+                            <h2>Features</h2>
+                            <div className={ styles.descriptionContentPart }>
+                                <p>
+                                    <span><CvAnalyseIcon viewBox="0 0 17 21"/></span>
+                                    CV improvements — get personalized feedback to refine your resume and catch employers' attention.
+                                </p>
+                                <p>
+                                    <span><CoverIcon viewBox="0 0 20 20"/></span>
+                                    Cover Letter — create unique cover letter tailored to your strengths and job descriptions.
+                                </p>
+                                <p>
+                                    <span><QuestionIcon viewBox="0 0 21 21"/></span>
+                                    Interview questions — receive tailored interview questions based on your CV and job description to help you prepare.
+                                </p>
+                            </div>
+                        </div>
                         <img src='/images/demonstrate.gif' alt='' />
                     </ContentSection>
                     <ContentSection>
@@ -45,13 +55,13 @@ export default function Home() {
                     <ContentSection>
                         <h2>Why cvevo?</h2>
                         <p>
-                            Get advice and resources specifically tailored to your career background and aspirations.
+                            + Get advice and resources specifically tailored to your career background and aspirations.
                             <br/>
                             <br/>
-                            Our intuitive interface ensures you get the results you need quickly and effortlessly.
+                            + Our intuitive interface ensures you get the results you need quickly and effortlessly.
                             <br/>
                             <br/>
-                            Be well-prepared and self-assured with tools designed to help you succeed.
+                            + Be well-prepared and self-assured with tools designed to help you succeed.
                         </p>
                     </ContentSection>
                 </div>

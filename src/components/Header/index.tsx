@@ -17,7 +17,7 @@ export const Header = () => {
             label: 'Pricing',
         },
         // {
-        //     onClick: handleLogin,
+        //     href: '/analyse',
         //     label: 'Account',
         // },
     ];

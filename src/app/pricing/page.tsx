@@ -18,29 +18,29 @@ export default function Pricing() {
                     <div className={ styles.plansDescription }>
                         <h2>Plans</h2>
                         <p>
-                            Unlock additional features by watching short ads while your CV is being analyzed.
-                            <br/>
-                            <br/>
-                            This way, we can keep offering you valuable insights at no cost, with the option to enhance your experience.
+                            By watching short ads while your CV is being analyzed, you can gain valuable insights at no cost and have the option to enhance your experience.
                         </p>
                     </div>
                     <div className={ styles.plansBlock }>
                         <ContentSection>
-                            <h2>Free</h2>
+                            <h2>Free (For all)</h2>
                             <p>
-                                1. Analyse your CV - receive tailored advice on how to optimize your CV, from formatting tips to content suggestions
+                                1. CV improvements - get personalized feedback to refine your resume and catch employers' attention.
                                 <br/>
                                 <br/>
-                                2. Interview questions - research 5 potential interview questions you might encounter and prepare to your next interview
+                                2. Cover Letter - create unique cover letter tailored to your strengths and job descriptions.
+                                <br/>
+                                <br/>
+                                3. Interview questions - receive 10 tailored interview questions based on your CV and job description to help you prepare.
                             </p>
                         </ContentSection>
                         <ContentSection>
-                            <h2>Extra (Also free, but with ads)</h2>
+                            <h2>Pro HR (Soon - for HR)</h2>
                             <p>
-                                1. Interview questions - research 15 potential interview questions you might encounter and prepare to your next interview.
+                                Revolutionize your hiring process with HRAI, the cutting-edge AI-powered service designed to streamline and enhance candidate screening.
                                 <br/>
                                 <br/>
-                                2. Cover letter - increase your chances of landing your dream job with a CV that highlights your strengths and aligns with industry standards.
+                                HRAI leverages advanced artificial intelligence to automatically analyze resumes, cover letters, and job descriptions, providing you with valuable insights and recommendations to identify the best candidates quickly and efficiently
                             </p>
                         </ContentSection>
                     </div>
