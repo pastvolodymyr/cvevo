@@ -25,16 +25,16 @@ export default function Home() {
                             <h2>Features</h2>
                             <div className={ styles.descriptionContentPart }>
                                 <p>
-                                    <span><CvAnalyseIcon viewBox="0 0 17 21"/></span>
-                                    CV improvements — get personalized feedback to refine your resume and catch employers' attention.
+                                    <span><CvAnalyseIcon viewBox="0 0 17 21"/>CV improvements </span>
+                                     — get personalized feedback to refine your resume and catch employers' attention.
                                 </p>
                                 <p>
-                                    <span><CoverIcon viewBox="0 0 20 20"/></span>
-                                    Cover Letter — create unique cover letter tailored to your strengths and job descriptions.
+                                    <span><CoverIcon viewBox="0 0 20 20"/>Cover Letter </span>
+                                    — create unique cover letter tailored to your strengths and job descriptions.
                                 </p>
                                 <p>
-                                    <span><QuestionIcon viewBox="0 0 21 21"/></span>
-                                    Interview questions — receive tailored interview questions based on your CV and job description to help you prepare.
+                                    <span><QuestionIcon viewBox="0 0 21 21"/>Interview questions </span>
+                                    — receive tailored interview questions based on your CV and job description to help you prepare.
                                 </p>
                             </div>
                         </div>

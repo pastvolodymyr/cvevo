@@ -4,7 +4,9 @@ import { Josefin_Sans } from 'next/font/google';
 
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
+import StoreProvider from '@/store/StoreProvider';
 import StarBg from '@/svg/starBg.svg';
+
 import '../globalStyles/globals.scss';
 
 const josefinSans = Josefin_Sans({ subsets: [ 'latin' ], variable: '--font' });
@@ -37,11 +39,15 @@ export default function RootLayout({
                 <div className='bgAnimation'>
                     <StarBg viewBox="0 0 1115 1002"/>
                 </div>
-                <Header />
-                <main>
-                    {children}
-                </main>
-                <Footer />
+                <StoreProvider>
+                    <>
+                        <Header />
+                        <main>
+                            {children}
+                        </main>
+                        <Footer />
+                    </>
+                </StoreProvider>
             </body>
         </html>
     );

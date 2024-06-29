@@ -1,0 +1,46 @@
+.cvAnalyser {
+  .uploadFileField {
+    display: none;
+  }
+
+  .loaderWrapper {
+    height: 22px;
+    display: flex;
+    align-items: center;
+  }
+
+  .stepBlock {
+    border-left: 2px solid var(--secondary-color);
+    padding-left: 14px;
+    margin-bottom: 35px;
+    opacity: 0.4;
+    pointer-events: none;
+    transition: var(--transition);
+
+    &.stepBlockActive {
+      opacity: 1;
+      pointer-events: all;
+      transition: var(--transition);
+      margin-bottom: 50px;
+    }
+
+    h2, p {
+      margin-bottom: 14px;
+    }
+  }
+
+  @keyframes anim {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  section {
+    opacity: 0;
+    animation: anim var(--transition) forwards;
+  }
+}
+

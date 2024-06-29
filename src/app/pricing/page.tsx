@@ -40,7 +40,8 @@ export default function Pricing() {
                                 Revolutionize your hiring process with HRAI, the cutting-edge AI-powered service designed to streamline and enhance candidate screening.
                                 <br/>
                                 <br/>
-                                HRAI leverages advanced artificial intelligence to automatically analyze resumes, cover letters, and job descriptions, providing you with valuable insights and recommendations to identify the best candidates quickly and efficiently
+                                HRAI leverages advanced artificial intelligence to automatically analyze resumes, cover
+                                letters, and job descriptions, providing you with valuable insights and recommendations to identify the best candidates quickly and efficiently
                             </p>
                         </ContentSection>
                     </div>

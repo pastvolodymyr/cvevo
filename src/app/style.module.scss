@@ -10,7 +10,7 @@
 
     .heroBlock {
       margin-top: 65px;
-      margin-bottom: 95px;
+      margin-bottom: 85px;
 
       h1 {
         margin-bottom: 22px;
@@ -52,19 +52,18 @@
 
               span {
                 position: relative;
+                font-weight: 500;
 
                 svg {
                   position: absolute;
                   left: -23px;
                   top: -1px;
-
                   width: 17px;
                   height: 17px;
                 }
               }
             }
           }
-
         }
 
         h2 {

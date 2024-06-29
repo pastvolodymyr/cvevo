@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Loader } from '@/components/UI';
+import { CvAnalyser } from '@/modules/CvAnalyser';
 
 import styles from './style.module.scss';
 
@@ -14,7 +14,7 @@ export default function Analyse() {
                         Obtain actionable suggestions, tailored cover letters, and targeted interview questions to enhance your job search
                     </p>
                 </div>
-                <Loader />
+                <CvAnalyser />
             </div>
         </div>
     );
