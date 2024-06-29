@@ -1,12 +1,14 @@
 import React from 'react';
 
 import { ContentSection } from '@/components/UI';
+import { Ads } from '@/components/Ads';
 
 import styles from './style.module.scss';
 
 export default function Pricing() {
     return (
         <div className={ styles.pricing }>
+            <Ads />
             <div className={ styles.pricingWrapper }>
                 <div className={ styles.heroBlock }>
                     <h1>Pricing (spoiler - it's free!)</h1>

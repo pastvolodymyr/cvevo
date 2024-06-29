@@ -3,10 +3,12 @@ import React from 'react';
 import { CvAnalyser } from '@/modules/CvAnalyser';
 
 import styles from './style.module.scss';
+import { Ads } from '@/components/Ads';
 
 export default function Analyse() {
     return (
         <div className={ styles.analyse }>
+            <Ads />
             <div className={ styles.analyseWrapper }>
                 <div className={ styles.heroBlock }>
                     <h1>CV analyser</h1>

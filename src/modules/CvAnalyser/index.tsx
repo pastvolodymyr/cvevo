@@ -5,10 +5,12 @@ import cx from 'classnames'
 import { Button, ContentSection, Loader } from '@/components/UI';
 
 import styles from './style.module.scss';
+import { Ads } from '@/components/Ads';
 
 export const CvAnalyser = () => {
     const [ fileData, setFileData ] = useState<File>();
     const [ fileLoading, setFileLoading ] = useState(false);
+    const [ showAds, setShowAds ] = useState(false)
     const isStepOne = !fileData?.name
 
     const uploadRef = useRef<HTMLInputElement>(null);
@@ -29,6 +31,7 @@ export const CvAnalyser = () => {
 
             // console.log(imageUrl)
 
+            setShowAds(true)
             setFileLoading(false);
             setFileData(file);
         })
@@ -43,6 +46,9 @@ export const CvAnalyser = () => {
 
     return (
         <div className={ styles.cvAnalyser }>
+            {
+                showAds && <Ads />
+            }
             <UploadFileInvisible />
             <div className={ cx(styles.stepBlock, { [styles.stepBlockActive]: isStepOne }) }>
                 <h2>Step One</h2>

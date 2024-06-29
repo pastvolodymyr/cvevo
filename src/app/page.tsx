@@ -6,10 +6,12 @@ import CoverIcon from '@/svg/cover.svg';
 import QuestionIcon from '@/svg/question.svg';
 
 import styles from './style.module.scss';
+import { Ads } from '@/components/Ads';
 
 export default function Home() {
     return (
         <div className={ styles.home }>
+            <Ads />
             <div className={ styles.homeWrapper }>
                 <div className={ styles.heroBlock }>
                     <h1>Free AI-powered CV analysing tool</h1>
