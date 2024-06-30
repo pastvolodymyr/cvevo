@@ -16,10 +16,19 @@ export const Ads = () => {
         setTimeout(() => {
             setShowAdd3(true)
         }, 3000)
+
+        return () => {
+            setShowAdd1(false);
+            setShowAdd2(false)
+            setShowAdd3(false)
+        }
     }, [])
 
     return (
         <>
+            <div id="container-46728ba2c593e2a08b4c757bb798d2ec" />
+            <script async data-cfasync={ false } src={ 'https://barelydonkeysteed.com/46728ba2c593e2a08b4c757bb798d2ec/invoke.js' }/>
+
             {showAd1
                 && <iframe src="https://www.highrevenuenetwork.com/gdq500icu?key=0ebee665a703f450a89f215a8aaf631e"/>}
             {showAd2
