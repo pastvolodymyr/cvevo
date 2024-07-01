@@ -1,6 +1,7 @@
 "use client"
 import React, { useRef, useState } from 'react';
 import cx from 'classnames'
+import Turnstile from "react-turnstile";
 
 import { Button, ContentSection, Loader } from '@/components/UI';
 
@@ -8,6 +9,8 @@ import styles from './style.module.scss';
 import { Ads } from '@/components/Ads';
 
 export const CvAnalyser = () => {
+    const [ isVerify, setIsVerify ] = useState(false);
+
     const [ fileData, setFileData ] = useState<File>();
     const [ fileLoading, setFileLoading ] = useState(false);
     const [ showAds, setShowAds ] = useState(false)
@@ -52,16 +55,31 @@ export const CvAnalyser = () => {
             <UploadFileInvisible />
             <div className={ cx(styles.stepBlock, { [styles.stepBlockActive]: isStepOne }) }>
                 <h2>Step One</h2>
-                <p>
-                    Upload your CV in PDF or PNG/JPEG format
-                </p>
+
                 {
-                    fileLoading
-                        ? <div className={ styles.loaderWrapper }>
-                            <Loader />
+                    isVerify ? <>
+                        <p>
+                            Upload your CV in PDF or PNG/JPEG format
+                        </p>
+                        {
+                            fileLoading
+                                ? <div className={ styles.loaderWrapper }>
+                                    <Loader />
+                                </div>
+                                : <Button disabled={ !isVerify } text={ fileData?.name || 'File upload' } onClick={ openUploadWindow }/>
+                        }
+                    </>
+                        : <div className={ styles.captcha }>
+                            <Turnstile
+                                fixedSize
+                                theme={ 'light' }
+                                sitekey="0x4AAAAAAAeC5zDZbX2U4RHS"
+                                // sitekey={'1x00000000000000000000AA'}
+                                onVerify={ () => setIsVerify(true) }
+                            />
                         </div>
-                        : <Button text={ fileData?.name || 'File upload' } onClick={ openUploadWindow }/>
                 }
+
             </div>
             {
                 fileData?.type
