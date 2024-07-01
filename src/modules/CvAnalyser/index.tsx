@@ -1,12 +1,12 @@
 "use client"
 import React, { useRef, useState } from 'react';
 import cx from 'classnames'
-import Turnstile from "react-turnstile";
 
 import { Button, ContentSection, Loader } from '@/components/UI';
+import { Ads } from '@/components/Ads';
+import { Captcha } from '@/components/Captcha';
 
 import styles from './style.module.scss';
-import { Ads } from '@/components/Ads';
 
 export const CvAnalyser = () => {
     const [ isVerify, setIsVerify ] = useState(false);
@@ -26,7 +26,7 @@ export const CvAnalyser = () => {
 
         // @ts-ignore
         formData.append("image", file)
-        fetch(`https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}&expiration=60`, {
+        fetch(`https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API}&expiration=60`, {
             method: 'POST',
             body: formData,
         }).then(res => res.json()).then(() => {
@@ -55,37 +55,28 @@ export const CvAnalyser = () => {
             <UploadFileInvisible />
             <div className={ cx(styles.stepBlock, { [styles.stepBlockActive]: isStepOne }) }>
                 <h2>Step One</h2>
-
                 {
-                    isVerify ? <>
-                        <p>
+                    isVerify
+                        ? <>
+                            <p>
                             Upload your CV in PDF or PNG/JPEG format
-                        </p>
-                        {
-                            fileLoading
-                                ? <div className={ styles.loaderWrapper }>
-                                    <Loader />
-                                </div>
-                                : <Button disabled={ !isVerify } text={ fileData?.name || 'File upload' } onClick={ openUploadWindow }/>
-                        }
-                    </>
-                        : <div className={ styles.captcha }>
-                            <div className={styles.captchaLoader}>
-                                <Loader />
-                            </div>
-                            <Turnstile
-                                className={styles.captchaWidget}
-                                fixedSize
-                                theme={ 'light' }
-                                appearance={ 'always' }
-                                execution={ 'render' }
-                                sitekey="0x4AAAAAAAeC5zDZbX2U4RHS"
-                                // sitekey={ '1x00000000000000000000AA' }
-                                onVerify={ () => setIsVerify(true) }
-                            />
+                            </p>
+                            {
+                                fileLoading
+                                    ? <div className={ styles.loaderWrapper }>
+                                        <Loader />
+                                    </div>
+                                    : <Button
+                                        disabled={ !isVerify }
+                                        text={ fileData?.name || 'File upload' }
+                                        onClick={ openUploadWindow }
+                                    />
+                            }
+                        </>
+                        : <div className={ styles.captchaWrapper }>
+                            <Captcha onVerify={ () => setIsVerify(true) }/>
                         </div>
                 }
-
             </div>
             {
                 fileData?.type
