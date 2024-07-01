@@ -78,8 +78,8 @@ export const CvAnalyser = () => {
                                 theme={ 'light' }
                                 appearance={ 'always' }
                                 execution={ 'render' }
-                                // sitekey="0x4AAAAAAAeC5zDZbX2U4RHS"
-                                sitekey={ '1x00000000000000000000AA' }
+                                sitekey="0x4AAAAAAAeC5zDZbX2U4RHS"
+                                // sitekey={ '1x00000000000000000000AA' }
                                 onVerify={ () => setIsVerify(true) }
                             />
                         </div>
