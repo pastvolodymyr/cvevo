@@ -9,15 +9,17 @@ export const Ads = () => {
     const [ showAd3, setShowAdd3 ] = useState(false);
 
     useEffect(() => {
-        setTimeout(() => {
-            setShowAdd1(true)
-        }, 1000)
-        setTimeout(() => {
-            setShowAdd2(true)
-        }, 2000)
-        setTimeout(() => {
-            setShowAdd3(true)
-        }, 3000)
+        if(process.env.NODE_ENV !== 'development') {
+            setTimeout(() => {
+                setShowAdd1(true)
+            }, 1000)
+            setTimeout(() => {
+                setShowAdd2(true)
+            }, 2000)
+            setTimeout(() => {
+                setShowAdd3(true)
+            }, 3000)
+        }
 
         return () => {
             setShowAdd1(false);
