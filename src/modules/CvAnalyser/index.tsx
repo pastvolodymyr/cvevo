@@ -74,6 +74,7 @@ export const CvAnalyser = () => {
                                 <Loader />
                             </div>
                             <Turnstile
+                                className={styles.captchaWidget}
                                 fixedSize
                                 theme={ 'light' }
                                 appearance={ 'always' }
