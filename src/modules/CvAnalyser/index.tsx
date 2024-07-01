@@ -70,11 +70,16 @@ export const CvAnalyser = () => {
                         }
                     </>
                         : <div className={ styles.captcha }>
+                            <div className={styles.captchaLoader}>
+                                <Loader />
+                            </div>
                             <Turnstile
                                 fixedSize
                                 theme={ 'light' }
-                                sitekey="0x4AAAAAAAeC5zDZbX2U4RHS"
-                                // sitekey={'1x00000000000000000000AA'}
+                                appearance={ 'always' }
+                                execution={ 'render' }
+                                // sitekey="0x4AAAAAAAeC5zDZbX2U4RHS"
+                                sitekey={ '1x00000000000000000000AA' }
                                 onVerify={ () => setIsVerify(true) }
                             />
                         </div>
