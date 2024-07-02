@@ -1,3 +1,12 @@
+@keyframes sectionAnim {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .cvAnalyser {
   .uploadFileField {
     display: none;
@@ -11,6 +20,12 @@
     height: 22px;
     display: flex;
     align-items: center;
+  }
+
+  section {
+    opacity: 0;
+    animation: sectionAnim var(--transition) forwards;
+    margin-bottom: 40px;
   }
 
   .stepBlock {
@@ -33,18 +48,39 @@
     }
   }
 
-  @keyframes anim {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
+  .stepOneSection {
+    h2 {
+      margin-bottom: 50px;
+      text-indent: 30px;
+      position: relative;
 
-  section {
-    opacity: 0;
-    animation: anim var(--transition) forwards;
+      svg {
+        position: absolute;
+        left: 0;
+        top: -3.5px;
+        width: 25px;
+        height: 25px;
+      }
+    }
+
+    .stepOneSectionResults {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+      .stepOneSectionResult {
+        width: calc(50% - 20px);
+
+        h2 {
+          margin-bottom: 20px;
+          text-indent: 0;
+        }
+
+        &:nth-child(1), &:nth-child(2) {
+          margin-bottom: 40px;
+        }
+      }
+    }
   }
 }
 

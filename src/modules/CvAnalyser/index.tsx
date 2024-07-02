@@ -4,44 +4,43 @@ import cx from 'classnames'
 
 import { Button, ContentSection, Loader } from '@/components/UI';
 import { Captcha } from '@/components/Captcha';
+import CvIcon from '@/svg/cv_analyse.svg'
 
 import styles from './style.module.scss';
 
-function convertStringToArray(input: string) {
-    const arrayWithData = input
-        .split('\n')
-        .filter(text => text)
-        .map(text => text.replace(/\\/g, ''))
-        .map(text => text.replace(/#/g, '').trim());
-
-    return Array.from({ length: arrayWithData.length/2 }).map((_, index) => {
-        const currentIndex = index * 2;
-
-        return {
-            label: arrayWithData[currentIndex],
-            text: arrayWithData[currentIndex + 1],
-        }
-    })
-}
+// const fakeAi = [
+//     {
+//         "label": "Unclear work history",
+//         "text": "The employment history section could be better organized to highlight key roles, responsibilities, and achievements. Consider using a reverse chronological format and providing more details on your work experience and skills developed in each position.",
+//     },
+//     {
+//         "label": "Lack of relevant skills",
+//         "text": "The skills section is quite broad and could be tailored to showcase the technical and programming skills most relevant to the frontend developer role you are seeking. Consider grouping skills into categories and prioritizing those most pertinent to the job.",
+//     },
+//     {
+//         "label": "Unstructured layout",
+//         "text": "The overall layout could be made more visually appealing and easier to scan. Consider using consistent formatting, clear section headings, and proper spacing to make the resume more organized and professional-looking.",
+//     },
+//     {
+//         "label": "Limited project details",
+//         "text": "Adding a projects section with brief descriptions of your work on relevant frontend development initiatives could help demonstrate your practical experience and showcase your skills in action.",
+//     },
+// ]
 
 export const CvAnalyser = () => {
     const [ isVerify, setIsVerify ] = useState(false);
-    const [ isError, setIsError ] = useState('');
-
+    const [ error, setError ] = useState('');
     const [ fileData, setFileData ] = useState<File>();
     const [ fileLoading, setFileLoading ] = useState(false);
-
-    const [ cvImprove, setCvImprove ] = useState<{label: string, text: string}[]>([])
-    const isStepOne = !fileData?.name
+    const [ cvImprovements, setCvImprovements ] = useState<{label: string, text: string}[]>([])
 
     const uploadRef = useRef<HTMLInputElement>(null);
-    const openUploadWindow = () => uploadRef.current?.click();
     const onUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFileLoading(true)
+        setError('')
+
         const file = event.target.files?.[0];
         const formData = new FormData()
-
-        setFileLoading(true)
-        setIsError('')
 
         // @ts-ignore
         formData.append("image", file)
@@ -52,20 +51,19 @@ export const CvAnalyser = () => {
         })
             .then(res => res.json())
             .then(res => {
-                if(res.data && res.data !== 'null') {
-                    setCvImprove(convertStringToArray(res.data));
+                if(res.data && !res.error) {
+                    setCvImprovements(res.data);
                     setFileData(file);
                 }
                 if(res.error) {
-                    setIsError(res.error);
+                    setError(res.error);
                 }
-                if (res.data == 'null') {
-                    setIsError("Sorry, our AI thinks there is no CV");
-                }
+
                 setFileLoading(false);
             })
     };
 
+    const openUploadWindow = () => uploadRef.current?.click();
     const UploadFileInvisible = () => <input
         ref={ uploadRef }
         type="file"
@@ -76,13 +74,13 @@ export const CvAnalyser = () => {
     return (
         <div className={ styles.cvAnalyser }>
             <UploadFileInvisible />
-            <div className={ cx(styles.stepBlock, { [styles.stepBlockActive]: isStepOne }) }>
+            <div className={ cx(styles.stepBlock, { [styles.stepBlockActive]: !cvImprovements?.length }) }>
                 <h2>Step One</h2>
                 {
                     isVerify
                         ? <>
                             <p>
-                            Upload your CV in PDF or PNG/JPEG format
+                                Upload your CV in PDF or PNG/JPEG format
                             </p>
                             {
                                 fileLoading
@@ -95,7 +93,7 @@ export const CvAnalyser = () => {
                                             text={ fileData?.name || 'File upload' }
                                             onClick={ openUploadWindow }
                                         />
-                                        { isError && <span> ({isError})</span> }
+                                        { error && <span> ({error})</span> }
                                     </div>
                             }
                         </>
@@ -107,30 +105,21 @@ export const CvAnalyser = () => {
             {
                 fileData?.type
                 && !fileLoading
-                && <>
-                    <ContentSection>
-                        <h2>CV improvements</h2>
-                        <br/>
-                        <br/>
+                && <ContentSection className={styles.stepOneSection}>
+                    <h2><CvIcon viewBox="0 0 17 21"/>CV improvements</h2>
+                    <div className={styles.stepOneSectionResults}>
                         {
-                            cvImprove?.map(improve => (
-                                <>
-                                    <div>
-                                        <h2>{improve.label}</h2>
-                                        <br/>
-                                        <p>{improve.text}</p>
-                                    </div>
-                                    <br/>
-                                    <br/>
-                                </>
+                            cvImprovements?.map((improve, index) => (
+                                <div key={ index } className={styles.stepOneSectionResult}>
+                                    <h2>{ improve.label }</h2>
+                                    <p>{ improve.text }</p>
+                                </div>
                             ))
                         }
-                    </ContentSection>
-                    <br/>
-                    <br/>
-                </>
+                    </div>
+                </ContentSection>
             }
-            <div className={ cx(styles.stepBlock, { [styles.stepBlockActive]: !isStepOne }) }>
+            <div className={ cx(styles.stepBlock, { [styles.stepBlockActive]: cvImprovements.length }) }>
                 <h2>Step Two (Soon)</h2>
                 <p>
                     Add your dream job details

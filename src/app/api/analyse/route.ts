@@ -1,13 +1,26 @@
-import OpenAI from "openai";
+// import OpenAI from "openai";
 import { NextRequest, NextResponse } from 'next/server';
+import Anthropic from '@anthropic-ai/sdk';
+import sharp from 'sharp';
 
-const openai = new OpenAI();
+// const openai = new OpenAI();
+const anthropic = new Anthropic({
+    apiKey: process.env.CLAUDE_API,
+});
+
+const toBase64 = async (imageFile: { arrayBuffer: () => any; }) => {
+    const arrayBuffer = await imageFile.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    return buffer.toString('base64')
+}
 
 export const POST = async (req: NextRequest) => {
     const formData = await req.formData();
 
     const imageFile = formData.get('image');
 
+    //Claude
     try {
         const formData = new FormData()
 
@@ -27,62 +40,131 @@ export const POST = async (req: NextRequest) => {
             throw 'Image preparation error, please try again later'
         }
 
-        const imageUrl = imageUploadData?.data?.url;
+        const imageUrlFile = await fetch(imageUploadData.data.url);
 
-        try {
-            const completion = await openai.chat.completions.create({
-                messages: [
-                    {
-                        "role": "user",
-                        "content": [
-                            {
-                                "type": "text",
-                                "text": "Look CV write up to 5 short improvement/grammar about this CV, ONLY required format #{improvement name without number} ##{improvements text}, if you can\'t recognize CV text - send null",
+        const imageBase = await toBase64(imageUrlFile);
+        const img = new Buffer(imageBase, 'base64');
+
+        const resizedBase = await sharp(img)
+            .resize(300, 300, { fit: 'contain' })
+            .toBuffer()
+            .then(resizedImageBuffer => {
+                const resizedImageData = resizedImageBuffer.toString('base64');
+
+                return `data:${imageUploadData.data.image.mime};base64,${resizedImageData}`
+            })
+
+        const parts = resizedBase.split(';');
+        // @ts-ignore
+        const mimType: "image/jpeg" | "image/png" | "image/gif" | "image/webp" = parts[0].split(':')[1];
+        const imageData = parts[1].split(',')[1];
+
+
+        const msg = await anthropic.messages.create({
+            model: "claude-3-haiku-20240307",
+            max_tokens: 500,
+            temperature: 1,
+            system: `Is it a professional portfolio or resume (choose on of these answers and send JSON answer)? 1. Yes - analyze this CV file and find improvements to maximize its professional impact. Send only JSON with 4 problems/issues (e.g. [{label: {Issue name}, text: {Issue solution with examples from this image}}]). 2. No - send me only JSON [{error: true}].`,
+            messages: [
+                {
+                    role: "user",
+                    content: [
+                        {
+                            "type": "image",
+                            "source": {
+                                "type": "base64",
+                                "media_type": mimType,
+                                "data": imageData,
                             },
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": imageUrl,
-                                    "detail": "low",
-                                },
-                            },
-                        ],
-                        // "content": [
-                        //     {
-                        //         "type": "text",
-                        //         "text": `Analize photo and create JSON with: hair (pompadour, bald, irokez, longShag, bob),
-                        // ears (attached, detached), eyes (primary, smiling, eyeShadow, round), glasses (rectangle,
-                        // square, round, aviator, oversized, none), facialHair (beard, scruff, none), clothes (open, crew,
-                        // shirt), hairColor (required), beardColor (null if none), clothColor (required). Colors in hex.
-                        //  Use null only where specified (e.g., beardColor if no beard)`,
-                        //     },
-                        //     {
-                        //         "type": "image_url",
-                        //         "image_url": {
-                        //             "url": data.image,
-                        //             "detail": "low",
-                        //         },
-                        //     },
-                        // ],
-                    },
-                ],
-                model: "gpt-4o",
-                max_tokens: 150,
-                // response_format: { type: "json_object" },
-            });
+                        },
+                    ],
+                },
+                {
+                    role: "assistant",
+                    content: [
+                        {
+                            "type": "text",
+                            "text": "Here is JSON:\n[{",
+                        },
+                    ],
+                },
+            ],
+        });
 
-            const answer = completion.choices[0]?.message?.content;
+        // @ts-ignore
+        const aiAnswer = msg?.content[0]?.text && JSON.parse('[{' + msg.content[0].text);
 
-            return NextResponse.json({
-                message: 'AI\'s answer',
-                data: answer,
-                aiData: completion,
-                imageUrl,
-            }, { status: 201 });
-        } catch (e) {
-            throw 'Sorry, our AI has a headache, please try again later'
+        if(aiAnswer?.[0]?.error) {
+            throw 'Sorry, our AI thinks there is no CV';
         }
+
+        return NextResponse.json({
+            message: 'AI\'s answer',
+            data: aiAnswer,
+            aiData: msg,
+        }, { status: 201 });
     } catch (e) {
-        return NextResponse.json({ error: e }, { status: 400 });
+        return NextResponse.json({ error: Object.keys(e || {}).length ? e : 'Sorry, our AI went to sleep, please try again later' }, { status: 400 });
     }
+
+    // chatGPT
+    // try {
+    //     const formData = new FormData()
+    //
+    //     // @ts-ignore
+    //     formData.append("image", imageFile)
+    //
+    //     const imageUploadData = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=60`, {
+    //         method: 'POST',
+    //         body: formData,
+    //     })
+    //         .then(res => res?.json())
+    //         .catch(() => {
+    //             throw 'Image preparation error, please try again later'
+    //         })
+    //
+    //     if(!imageUploadData || imageUploadData?.error) {
+    //         throw 'Image preparation error, please try again later'
+    //     }
+    //
+    //     const imageUrl = imageUploadData?.data?.url;
+    //
+    //     try {
+    //         const completion = await openai.chat.completions.create({
+    //             messages: [
+    //                 {
+    //                     "role": "user",
+    //                     "content": [
+    //                         {
+    //                             "type": "text",
+    //                             "text": "Look CV write up to 5 short improvement/grammar about this CV, ONLY required format #{improvement name without number} ##{improvements text}, if you can\'t recognize CV text - send null",
+    //                         },
+    //                         {
+    //                             "type": "image_url",
+    //                             "image_url": {
+    //                                 "url": imageUrl,
+    //                                 "detail": "low",
+    //                             },
+    //                         },
+    //                     ],
+    //                 },
+    //             ],
+    //             model: "gpt-4o",
+    //             max_tokens: 150,
+    //         });
+    //
+    //         const answer = completion.choices[0]?.message?.content;
+    //
+    //         return NextResponse.json({
+    //             message: 'AI\'s answer',
+    //             data: answer,
+    //             aiData: completion,
+    //             imageUrl,
+    //         }, { status: 201 });
+    //     } catch (e) {
+    //         throw 'Sorry, our AI has a headache, please try again later'
+    //     }
+    // } catch (e) {
+    //     return NextResponse.json({ error: e }, { status: 400 });
+    // }
 }
