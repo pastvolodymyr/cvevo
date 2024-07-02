@@ -1,16 +1,21 @@
 .button {
-  background: none;
-  border: none;
+  min-height: 45px;
+  padding: 12px 25px 8px 25px;
+  background: var(--secondary-color);
+  color: var(--primary-color);
   font-family: var(--font);
-  font-size: 22px;
-  cursor: pointer;
-  text-decoration: underline;
   font-weight: 400;
+  font-size: 20px;
+  border: none;
+  border-radius: 10px;
   transition: var(--transition);
+  cursor: pointer;
+  -webkit-font-smoothing: antialiased;
 
   &:hover {
     opacity: 0.6;
     transition: var(--transition);
+    cursor: pointer;
   }
 
   &.buttonDisabled {

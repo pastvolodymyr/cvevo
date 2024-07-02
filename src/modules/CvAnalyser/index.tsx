@@ -90,7 +90,7 @@ export const CvAnalyser = () => {
                                     : <div>
                                         <Button
                                             disabled={ !isVerify }
-                                            text={ fileData?.name || 'File upload' }
+                                            text={ fileData?.name ? 'File Uploaded :)' : 'File upload' }
                                             onClick={ openUploadWindow }
                                         />
                                         { error && <span> ({error})</span> }
@@ -98,12 +98,14 @@ export const CvAnalyser = () => {
                             }
                         </>
                         : <div className={ styles.captchaWrapper }>
-                            <Captcha onVerify={ () => setIsVerify(true) }/>
+                            <Captcha
+                                onVerify={ () => setIsVerify(true) }
+                            />
                         </div>
                 }
             </div>
             {
-                fileData?.type
+                !!cvImprovements?.length
                 && !fileLoading
                 && <ContentSection className={styles.stepOneSection}>
                     <h2><CvIcon viewBox="0 0 17 21"/>CV improvements</h2>

@@ -1,12 +1,13 @@
 import React from 'react';
 
-import { ContentSection, LinkButton } from '@/components/UI';
+import { Button, ContentSection } from '@/components/UI';
 import CvAnalyseIcon from '@/svg/cv_analyse.svg';
 import CoverIcon from '@/svg/cover.svg';
 import QuestionIcon from '@/svg/question.svg';
 
 import styles from './style.module.scss';
 import { Ads } from '@/components/Ads';
+import Link from 'next/link';
 
 export default function Home() {
     return (
@@ -19,7 +20,9 @@ export default function Home() {
                         Whether you're a recent graduate, a seasoned professional,
                         or looking to pivot your career, cvevo is here to elevate your career to the next level!
                     </p>
-                    <LinkButton text={ 'Analyse your CV' } href={ '/analyse' }/>
+                    <Link href={'/analyse'}>
+                        <Button text={'Analyse your CV'}/>
+                    </Link>
                 </div>
                 <div className={ styles.sections }>
                     <ContentSection>
