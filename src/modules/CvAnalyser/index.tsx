@@ -2,7 +2,7 @@
 import React, { useRef, useState } from 'react';
 import cx from 'classnames'
 
-import { Button, ContentSection, Loader } from '@/components/UI';
+import { Button, ContentSection, Loader, Input } from '@/components/UI';
 import { Captcha } from '@/components/Captcha';
 import CvIcon from '@/svg/cv_analyse.svg'
 
@@ -75,7 +75,7 @@ export const CvAnalyser = () => {
         <div className={ styles.cvAnalyser }>
             <UploadFileInvisible />
             <div className={ cx(styles.stepBlock, { [styles.stepBlockActive]: !cvImprovements?.length }) }>
-                <h2>Step One</h2>
+                <h2>Step One (CV improvements)</h2>
                 {
                     isVerify
                         ? <>
@@ -107,12 +107,12 @@ export const CvAnalyser = () => {
             {
                 !!cvImprovements?.length
                 && !fileLoading
-                && <ContentSection className={styles.stepOneSection}>
+                && <ContentSection className={ styles.stepOneSection }>
                     <h2><CvIcon viewBox="0 0 17 21"/>CV improvements</h2>
-                    <div className={styles.stepOneSectionResults}>
+                    <div className={ styles.stepOneSectionResults }>
                         {
                             cvImprovements?.map((improve, index) => (
-                                <div key={ index } className={styles.stepOneSectionResult}>
+                                <div key={ index } className={ styles.stepOneSectionResult }>
                                     <h2>{ improve.label }</h2>
                                     <p>{ improve.text }</p>
                                 </div>
@@ -121,11 +121,16 @@ export const CvAnalyser = () => {
                     </div>
                 </ContentSection>
             }
-            <div className={ cx(styles.stepBlock, { [styles.stepBlockActive]: cvImprovements.length }) }>
-                <h2>Step Two (Soon)</h2>
-                <p>
+            <div className={ cx(styles.stepBlock, styles.stepTwo, { [styles.stepBlockActive]: cvImprovements.length }) }>
+                <h2>Step Two (Cover letter, Interview questions)</h2>
+                <p className={styles.stepDescription}>
                     Add your dream job details
                 </p>
+                <div className={ styles.stepTwoForm }>
+                    <Input value={ '' } placeholder={ 'Front end developer' } onChange={ () => {} } label={ "Job title" } counter={ 50 }/>
+                    <Input value={ '' } placeholder={ '4 years in development, React, Next' } onChange={ () => {} } label={ "Job requirements" } type={ 'textarea' } counter={ 50 }/>
+                    <Button text={'Generate'}/>
+                </div>
             </div>
         </div>
     )

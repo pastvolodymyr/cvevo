@@ -30,11 +30,16 @@ export const Ads = () => {
 
     return (
         <div className={ styles.ads }>
-            <div id="container-46728ba2c593e2a08b4c757bb798d2ec" />
-            <script async data-cfasync={ false } src={ 'https://barelydonkeysteed.com/46728ba2c593e2a08b4c757bb798d2ec/invoke.js' }/>
 
             {showAd1
-                && <iframe src="https://barelydonkeysteed.com/gdq500icu?key=0ebee665a703f450a89f215a8aaf631e"/>}
+                && (
+                    <>
+                        <div id="container-46728ba2c593e2a08b4c757bb798d2ec" />
+                        <script async data-cfasync={ false } src={ 'https://barelydonkeysteed.com/46728ba2c593e2a08b4c757bb798d2ec/invoke.js' }/>
+                        <iframe src="https://barelydonkeysteed.com/gdq500icu?key=0ebee665a703f450a89f215a8aaf631e"/>)
+                    </>
+                )
+            }
             {showAd2
                 && <iframe src="https://barelydonkeysteed.com/gdq500icu?key=0ebee665a703f450a89f215a8aaf631e"/>}
             {showAd3

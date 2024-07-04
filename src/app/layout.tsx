@@ -8,6 +8,9 @@ import StoreProvider from '@/store/StoreProvider';
 import StarBg from '@/svg/starBg.svg';
 
 import '../globalStyles/globals.scss';
+import { AuthProvider } from '@/providers/AuthProvider';
+import { getServerSession } from 'next-auth';
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
 const josefinSans = Josefin_Sans({ subsets: [ 'latin' ], variable: '--font' });
 
@@ -16,11 +19,13 @@ export const metadata: Metadata = {
     description: 'AI-powered CV enhancement tool',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+    const session = await getServerSession(authOptions)
+
     return (
         <html lang="en">
             <head>
@@ -39,15 +44,17 @@ export default function RootLayout({
                 <div className='bgAnimation'>
                     <StarBg viewBox="0 0 1115 1002"/>
                 </div>
-                <StoreProvider>
-                    <>
-                        <Header />
-                        <main>
-                            {children}
-                        </main>
-                        <Footer />
-                    </>
-                </StoreProvider>
+                <AuthProvider session={ session }>
+                    <StoreProvider>
+                        <>
+                            <Header />
+                            <main>
+                                {children}
+                            </main>
+                            <Footer />
+                        </>
+                    </StoreProvider>
+                </AuthProvider>
             </body>
         </html>
     );

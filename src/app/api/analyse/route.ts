@@ -61,10 +61,39 @@ export const POST = async (req: NextRequest) => {
 
 
         const msg = await anthropic.messages.create({
-            model: "claude-3-haiku-20240307",
+            model: "claude-3-5-sonnet-20240620",
             max_tokens: 500,
             temperature: 1,
-            system: `Is it a professional portfolio or resume (choose on of these answers and send JSON answer)? 1. Yes - analyze this CV file and find improvements to maximize its professional impact. Send only JSON with 4 problems/issues (e.g. [{label: {Issue name}, text: {Issue solution with examples from this image}}]). 2. No - send me only JSON [{error: true}].`,
+            system: `You will be analyzing the image to determine if it contains a professional portfolio or resume
+
+                    Your task is determining whether the image contains a professional portfolio or resume. Analyze the text carefully, looking for elements typically found in resumes or portfolios such as contact information, work experience, education, skills, or project descriptions.
+                    
+                    If you determine that the image does contain a professional portfolio or resume, respond with "Yes" and analyze the content to find 6 areas for improvement. If you determine that the image does not contain a professional portfolio or resume, respond with "No".
+                    
+                    Format your response as JSON. Use the following structure:
+                    
+                    For a "Yes" response:
+                    [
+                      {
+                        "label": "Issue name",
+                        "text": "Issue solution with examples from this image"
+                      },
+                      ...
+                    ]
+                    
+                    For a "No" response:
+                    [
+                      {
+                        "error": true
+                      }
+                    ]
+                    
+                    Ensure you provide exactly 6 improvement suggestions for a "Yes" response. Each suggestion should be specific and actionable, referencing content from the image.
+                    
+                    Write your final answer. Do not include any explanation or reasoning outside of the JSON structure.
+                    
+                    [Your JSON response here]`,
+            // system: `Is it a professional portfolio or resume (choose on of these answers and send JSON answer)? 1. Yes - analyze this CV file and find improvements to maximize its professional impact. Send only JSON with 4 problems/issues (e.g. [{label: {Issue name}, text: {Issue solution with examples from this image}}]). 2. No - send me only JSON [{error: true}].`,
             messages: [
                 {
                     role: "user",

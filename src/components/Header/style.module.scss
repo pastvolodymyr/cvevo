@@ -29,6 +29,18 @@
       li {
         margin-left: 25px;
       }
+
+      .loginBlock {
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        button {
+          padding: 3px 10px 0 10px;
+          min-height: 30px;
+        }
+      }
     }
   }
 }

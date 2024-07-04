@@ -20,13 +20,13 @@ export default function Home() {
                         Whether you're a recent graduate, a seasoned professional,
                         or looking to pivot your career, cvevo is here to elevate your career to the next level!
                     </p>
-                    <Link href={'/analyse'}>
-                        <Button text={'Analyse your CV'}/>
+                    <Link href={ '/analyse' }>
+                        <Button text={ 'Analyse your CV' }/>
                     </Link>
                 </div>
                 <div className={ styles.sections }>
                     <ContentSection>
-                        <div className={styles.textContentPart}>
+                        <div className={ styles.textContentPart }>
                             <h2>Features</h2>
                             <div className={ styles.descriptionContentPart }>
                                 <p>

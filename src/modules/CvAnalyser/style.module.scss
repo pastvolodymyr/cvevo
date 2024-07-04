@@ -82,5 +82,25 @@
       }
     }
   }
+
+  .stepTwo {
+    .stepDescription {
+      margin-bottom: 20px;
+    }
+
+    .stepTwoForm {
+      width: 50%;
+      padding-top: 20px;
+      border-top: 1px dashed var(--secondary-color);
+
+      label {
+        margin-bottom: 10px;
+      }
+
+      button {
+        margin-top: 10px;
+      }
+    }
+  }
 }
 

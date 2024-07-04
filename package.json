@@ -11,8 +11,10 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.3",
     "@reduxjs/toolkit": "^2.2.6",
+    "@vercel/kv": "^2.0.0",
     "classnames": "^2.5.1",
     "next": "14.2.4",
+    "next-auth": "^4.24.7",
     "openai": "^4.52.2",
     "react": "^18",
     "react-dom": "^18",
