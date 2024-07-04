@@ -2,7 +2,6 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { Josefin_Sans } from 'next/font/google';
 
-import { AuthProvider } from '@/auth/AuthProvider';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import StoreProvider from '@/store/StoreProvider';
@@ -41,13 +40,11 @@ export default async function RootLayout({
                     <StarBg viewBox="0 0 1115 1002"/>
                 </div>
                 <StoreProvider>
-                    <AuthProvider>
-                        <Header />
-                        <main>
-                            {children}
-                        </main>
-                        <Footer />
-                    </AuthProvider>
+                    <Header />
+                    <main>
+                        {children}
+                    </main>
+                    <Footer />
                 </StoreProvider>
             </body>
         </html>

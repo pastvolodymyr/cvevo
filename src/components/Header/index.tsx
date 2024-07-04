@@ -2,15 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 
 import Logo from '@/svg/logo.svg';
 import { Button, LinkButton } from '@/components/UI';
+import { useCurrentSession } from '@/auth/useCurrentSession';
 
 import styles from './style.module.scss';
 
 export const Header = () => {
-    const { status } = useSession();
+    const { status } = useCurrentSession();
 
     const links = [
         {

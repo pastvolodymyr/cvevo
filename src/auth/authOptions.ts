@@ -3,6 +3,7 @@ import { connectDB } from '@/store/mongo/mongodb';
 import User from '@/store/mongo/models/User';
 
 export const authOptions = {
+    trustHost: true,
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID || '',
