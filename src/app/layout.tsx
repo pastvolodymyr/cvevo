@@ -2,15 +2,13 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { Josefin_Sans } from 'next/font/google';
 
+import { AuthProvider } from '@/auth/AuthProvider';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import StoreProvider from '@/store/StoreProvider';
 import StarBg from '@/svg/starBg.svg';
 
 import '../globalStyles/globals.scss';
-import { AuthProvider } from '@/providers/AuthProvider';
-import { getServerSession } from 'next-auth';
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
 const josefinSans = Josefin_Sans({ subsets: [ 'latin' ], variable: '--font' });
 
@@ -24,8 +22,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-    const session = await getServerSession(authOptions)
-
     return (
         <html lang="en">
             <head>
@@ -44,17 +40,15 @@ export default async function RootLayout({
                 <div className='bgAnimation'>
                     <StarBg viewBox="0 0 1115 1002"/>
                 </div>
-                <AuthProvider session={ session }>
-                    <StoreProvider>
-                        <>
-                            <Header />
-                            <main>
-                                {children}
-                            </main>
-                            <Footer />
-                        </>
-                    </StoreProvider>
-                </AuthProvider>
+                <StoreProvider>
+                    <AuthProvider>
+                        <Header />
+                        <main>
+                            {children}
+                        </main>
+                        <Footer />
+                    </AuthProvider>
+                </StoreProvider>
             </body>
         </html>
     );

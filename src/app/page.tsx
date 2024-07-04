@@ -1,13 +1,13 @@
 import React from 'react';
+import Link from 'next/link';
 
 import { Button, ContentSection } from '@/components/UI';
 import CvAnalyseIcon from '@/svg/cv_analyse.svg';
 import CoverIcon from '@/svg/cover.svg';
 import QuestionIcon from '@/svg/question.svg';
+import { Ads } from '@/components/Ads';
 
 import styles from './style.module.scss';
-import { Ads } from '@/components/Ads';
-import Link from 'next/link';
 
 export default function Home() {
     return (
@@ -15,7 +15,7 @@ export default function Home() {
             <Ads />
             <div className={ styles.homeWrapper }>
                 <div className={ styles.heroBlock }>
-                    <h1>Free AI-powered CV analysing tool</h1>
+                    <h1>AI-powered CV analysing tool</h1>
                     <p>
                         Whether you're a recent graduate, a seasoned professional,
                         or looking to pivot your career, cvevo is here to elevate your career to the next level!

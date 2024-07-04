@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { signIn, useSession } from 'next-auth/react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 import Logo from '@/svg/logo.svg';
 import { Button, LinkButton } from '@/components/UI';
@@ -12,28 +11,6 @@ import styles from './style.module.scss';
 
 export const Header = () => {
     const { status } = useSession();
-
-    const pageParams = useSearchParams()
-    const router = useRouter()
-
-
-    useEffect(() => {
-        const login = pageParams.get('login')
-        const page = pageParams.get('page')
-
-
-        if(login && page) {
-            router.replace('/')
-
-            if(status === 'unauthenticated') {
-                router.replace('/')
-                signIn('google', {
-                    redirect: true,
-                    callbackUrl: `/${page}`,
-                })
-            }
-        }
-    }, [ pageParams, router, status ]);
 
     const links = [
         {
@@ -64,8 +41,8 @@ export const Header = () => {
                         <div className={ styles.loginBlock }>
                             {
                                 status === 'authenticated'
-                                    ? <Link href={ '/account' }><Button text={ 'My account' } /></Link>
-                                    : <Button text={ 'Sign in' } onClick={ () => signIn('google') }/>
+                                    ? <Link href={ '/account' }><Button text={ 'My Account' } /></Link>
+                                    : <Link href={ '/account' }><Button text={ 'Sign In' } /></Link>
                             }
                         </div>
                     </li>
