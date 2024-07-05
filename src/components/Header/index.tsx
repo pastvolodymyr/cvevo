@@ -26,7 +26,7 @@ export const Header = () => {
     return (
         <header className={ styles.header }>
             <div className={ styles.headerContent }>
-                <Link href={ '/' } className={ styles.logo }>
+                <Link prefetch={ false } href={ '/' } className={ styles.logo }>
                     <Logo />
                 </Link>
                 <ul className={ styles.navigation }>
@@ -41,8 +41,8 @@ export const Header = () => {
                         <div className={ styles.loginBlock }>
                             {
                                 status === 'authenticated'
-                                    ? <Link href={ '/account' }><Button text={ 'My Account' } /></Link>
-                                    : <Link href={ '/account' }><Button text={ 'Sign In' } /></Link>
+                                    ? <Link prefetch={ false } href={ '/account' }><Button text={ 'My Account' } /></Link>
+                                    : <Link prefetch={ false } href={ '/account' }><Button text={ 'Sign In' } /></Link>
                             }
                         </div>
                     </li>

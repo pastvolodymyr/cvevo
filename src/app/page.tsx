@@ -20,7 +20,7 @@ export default function Home() {
                         Whether you're a recent graduate, a seasoned professional,
                         or looking to pivot your career, cvevo is here to elevate your career to the next level!
                     </p>
-                    <Link href={ '/analyse' }>
+                    <Link prefetch={false} href={ '/analyse' }>
                         <Button text={ 'Analyse your CV' }/>
                     </Link>
                 </div>
@@ -43,7 +43,7 @@ export default function Home() {
                                 </p>
                             </div>
                         </div>
-                        <img src='/images/demonstrate.gif' alt='' />
+                        <img src='/images/demost.jpg' alt='Video demosntration' />
                     </ContentSection>
                     <ContentSection>
                         <h2>How it works?</h2>
