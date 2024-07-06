@@ -15,7 +15,7 @@ export default function Home() {
             <Ads />
             <div className={ styles.homeWrapper }>
                 <div className={ styles.heroBlock }>
-                    <h1>AI-powered CV analysing tool</h1>
+                    <h1>Free AI-powered CV analysing tool</h1>
                     <p>
                         Whether you're a recent graduate, a seasoned professional,
                         or looking to pivot your career, cvevo is here to elevate your career to the next level!
