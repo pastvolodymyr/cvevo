@@ -1,17 +1,12 @@
-"use client";
-
 import React from 'react';
 import Link from 'next/link';
 
 import Logo from '@/svg/logo.svg';
 import { Button, LinkButton } from '@/components/UI';
-import { useCurrentSession } from '@/auth/useCurrentSession';
 
 import styles from './style.module.scss';
 
 export const Header = () => {
-    const { status } = useCurrentSession();
-
     const links = [
         {
             href: '/analyse',
@@ -39,11 +34,7 @@ export const Header = () => {
                     }
                     <li key={ 'account' }>
                         <div className={ styles.loginBlock }>
-                            {
-                                status === 'authenticated'
-                                    ? <Link prefetch={ false } href={ '/account' }><Button text={ 'My Account' } /></Link>
-                                    : <Link prefetch={ false } href={ '/account' }><Button text={ 'Sign In' } /></Link>
-                            }
+                            <Link prefetch={ false } href={ '/account' }><Button text={ 'My Account' } /></Link>
                         </div>
                     </li>
                 </ul>

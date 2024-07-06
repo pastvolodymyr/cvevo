@@ -1,7 +1,7 @@
 // import OpenAI from "openai";
 import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
-import sharp from 'sharp';
+// import sharp from 'sharp';
 
 // const openai = new OpenAI();
 const anthropic = new Anthropic({
@@ -36,28 +36,31 @@ export const POST = async (req: NextRequest) => {
                 throw 'Image preparation error, please try again later'
             })
 
+        // @ts-ignore
         if(!imageUploadData || imageUploadData?.error) {
             throw 'Image preparation error, please try again later'
         }
 
+        // @ts-ignore
         const imageUrlFile = await fetch(imageUploadData.data.url);
 
         const imageBase = await toBase64(imageUrlFile);
-        const img = new Buffer(imageBase, 'base64');
+        // const img = new Buffer(imageBase, 'base64');
 
-        const resizedBase = await sharp(img)
-            .resize(300, 300, { fit: 'contain' })
-            .toBuffer()
-            .then(resizedImageBuffer => {
-                const resizedImageData = resizedImageBuffer.toString('base64');
-
-                return `data:${imageUploadData.data.image.mime};base64,${resizedImageData}`
-            })
-
-        const parts = resizedBase.split(';');
+        // const resizedBase = await sharp(img)
+        //     .resize(300, 300, { fit: 'contain' })
+        //     .toBuffer()
+        //     .then(resizedImageBuffer => {
+        //         const resizedImageData = resizedImageBuffer.toString('base64');
+        //
+        //         // @ts-ignore
+        //         return `data:${imageUploadData.data.image.mime};base64,${resizedImageData}`
+        //     })
+        //
+        // const parts = resizedBase.split(';');
         // @ts-ignore
-        const mimType: "image/jpeg" | "image/png" | "image/gif" | "image/webp" = parts[0].split(':')[1];
-        const imageData = parts[1].split(',')[1];
+        // const mimType: "image/jpeg" | "image/png" | "image/gif" | "image/webp" = parts[0].split(':')[1];
+        // const imageData = parts[1].split(',')[1];
 
 
         const msg = await anthropic.messages.create({
@@ -102,8 +105,8 @@ export const POST = async (req: NextRequest) => {
                             "type": "image",
                             "source": {
                                 "type": "base64",
-                                "media_type": mimType,
-                                "data": imageData,
+                                "media_type": 'image/jpeg',
+                                "data": imageBase,
                             },
                         },
                     ],
@@ -197,3 +200,5 @@ export const POST = async (req: NextRequest) => {
     //     return NextResponse.json({ error: e }, { status: 400 });
     // }
 }
+
+export const runtime = "edge";

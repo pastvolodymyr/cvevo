@@ -5,3 +5,5 @@ export async function GET(req: Request) {
 
     return signIn("google", { redirectTo: searchParams.get("callbackUrl") ?? "" });
 }
+
+export const runtime = "edge";

@@ -1,0 +1,10 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "cvevo"
+compatibility_date = "2024-07-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cvevo_db"
+database_id = "1edb1618-f249-479b-aa1b-2e4cc3a9406f"

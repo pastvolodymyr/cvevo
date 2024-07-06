@@ -51,11 +51,15 @@ export const CvAnalyser = () => {
         })
             .then(res => res.json())
             .then(res => {
+                // @ts-ignore
                 if(res.data && !res.error) {
+                    // @ts-ignore
                     setCvImprovements(res.data);
                     setFileData(file);
                 }
+                // @ts-ignore
                 if(res.error) {
+                    // @ts-ignore
                     setError(res.error);
                 }
 

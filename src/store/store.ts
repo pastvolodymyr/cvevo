@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { cvAnalyserSlice } from '@/store/slices/cvAnalyserSlice';
+import { userSlice } from '@/store/slices/user';
 
 export const makeStore = () => {
     return configureStore({
         reducer: {
-            [cvAnalyserSlice.name]: cvAnalyserSlice.reducer,
+            [userSlice.name]: userSlice.reducer,
         },
     })
 }

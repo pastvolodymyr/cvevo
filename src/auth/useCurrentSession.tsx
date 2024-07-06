@@ -6,7 +6,7 @@ import { Session } from 'next-auth';
 export const useCurrentSession = () => {
     const [ session, setSession ] = useState<Session | null>(null);
     // Changed the default status to loading
-    const [ status, setStatus ] = useState<string>("loading");
+    const [ status, setStatus ] = useState<string>("unauthenticated");
     const pathName = usePathname();
 
     const retrieveSession = useCallback(async () => {
