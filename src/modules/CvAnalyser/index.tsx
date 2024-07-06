@@ -127,13 +127,13 @@ export const CvAnalyser = () => {
             }
             <div className={ cx(styles.stepBlock, styles.stepTwo, { [styles.stepBlockActive]: cvImprovements.length }) }>
                 <h2>Step Two (Cover letter, Interview questions)</h2>
-                <p className={styles.stepDescription}>
+                <p className={ styles.stepDescription }>
                     Add your dream job details
                 </p>
                 <div className={ styles.stepTwoForm }>
                     <Input value={ '' } placeholder={ 'Front end developer' } onChange={ () => {} } label={ "Job title" } counter={ 50 }/>
                     <Input value={ '' } placeholder={ '4 years in development, React, Next' } onChange={ () => {} } label={ "Job requirements" } type={ 'textarea' } counter={ 50 }/>
-                    <Button text={'Generate'}/>
+                    <Button text={ 'Generate' }/>
                 </div>
             </div>
         </div>
