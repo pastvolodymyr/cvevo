@@ -42,7 +42,7 @@ export const Header = () => {
 
     return (
         <nav className={ styles.header }>
-            <Link prefetch={ false } href={ '/' } className={ styles.logo }>
+            <Link aria-label='Home page' prefetch={ false } href={ '/' } className={ styles.logo }>
                 <Logo />
             </Link>
             <ul className={ styles.navigation }>

@@ -37,11 +37,16 @@
         margin-bottom: 20px;
         background: none;
         border: 2px dashed var(--secondary-color);
+        max-width: 250px;
 
         span {
           color: var(--secondary-color);
+          display: block;
+          text-overflow: ellipsis;
+          overflow: hidden;
         }
       }
+
       .stepBlockTwoSubmit {
         margin-top: 15px;
       }
@@ -104,5 +109,7 @@
 
   @media (max-width: 768px) {
     width: 100%;
+    padding-left: 0;
+    border: none;
   }
 }
