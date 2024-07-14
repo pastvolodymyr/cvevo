@@ -18,7 +18,7 @@ export default function Home() {
                     Whether you're a recent graduate, a seasoned professional,
                     or looking to pivot your career, cvevo is here to elevate your career to the next level!
                 </p>
-                <Link aria-label='Start analysing your CV' prefetch={ true } href={ '/analyse' }>
+                <Link aria-label='Start analysing your CV' prefetch={ false } href={ '/analyse' }>
                     <Button text={ 'Analyse your CV' }/>
                 </Link>
             </header>
