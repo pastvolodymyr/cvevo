@@ -17,6 +17,7 @@ const nextConfig = {
       }
       config.optimization.splitChunks.maxSize = 30000; // Set the max chunk size to 200KB
     }
+
     return config;
   },
   productionBrowserSourceMaps: true,
