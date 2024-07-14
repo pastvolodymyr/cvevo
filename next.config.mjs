@@ -16,6 +16,7 @@ const nextConfig = {
   experimental: {
     serverComponents: false,
   },
+  productionBrowserSourceMaps: true,
 };
 
 export default nextConfig;
