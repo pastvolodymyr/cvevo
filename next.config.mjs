@@ -12,7 +12,10 @@ const nextConfig = {
       use: ['@svgr/webpack'],
     });
     return config;
-  }
+  },
+  experimental: {
+    serverComponents: false,
+  },
 };
 
 export default nextConfig;
