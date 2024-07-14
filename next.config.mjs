@@ -6,11 +6,17 @@ if (process.env.NODE_ENV === 'development') {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  webpack: config => {
+  webpack: (config, {isServer}) => {
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
+    if (!isServer) {
+      if (!config.optimization.splitChunks) {
+        config.optimization.splitChunks = {};
+      }
+      config.optimization.splitChunks.maxSize = 30000; // Set the max chunk size to 200KB
+    }
     return config;
   },
   productionBrowserSourceMaps: true,
