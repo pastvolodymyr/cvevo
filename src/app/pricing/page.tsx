@@ -1,54 +1,48 @@
 import React from 'react';
 
-import { ContentSection } from '@/components/UI';
+import { Button, ContentSection } from '@/components/UI';
 import { Ads } from '@/components/Ads';
 
 import styles from './style.module.scss';
 
 export default function Pricing() {
     return (
-        <div className={ styles.pricing }>
-            <Ads />
-            <div className={ styles.pricingWrapper }>
-                <div className={ styles.heroBlock }>
-                    <h1>Pricing (spoiler - it's free!)</h1>
+        <>
+            <header className={ styles.heroBlock }>
+                <h1>Pricing</h1>
+                <p>
+                    Take the first step towards your dream job by choosing a token pack that suits your needs.
+                </p>
+            </header>
+            <article className={ styles.plans }>
+                <section className={ styles.plansDescription }>
+                    <h2>Tokens Packs</h2>
                     <p>
-                        At our service, we believe everyone should have access to top-notch career tools without breaking the bank.
+                        Purchase tokens and use them for a range of comprehensive career support services,
+                        including CV improvements, personalized cover letter writing, and customized interview
+                        questions.
                     </p>
-                </div>
-                <div className={ styles.plans }>
-                    <div className={ styles.plansDescription }>
-                        <h2>Plans</h2>
-                        <p>
-                            By watching short ads while your CV is being analyzed, you can gain valuable insights at no cost and have the option to enhance your experience.
-                        </p>
-                    </div>
-                    <div className={ styles.plansBlock }>
-                        <ContentSection>
-                            <h2>Free (For all)</h2>
-                            <p>
-                                1. CV improvements - get personalized feedback to refine your resume and catch employers' attention.
-                                <br/>
-                                <br/>
-                                2. Cover Letter - create unique cover letter tailored to your strengths and job descriptions.
-                                <br/>
-                                <br/>
-                                3. Interview questions - receive 10 tailored interview questions based on your CV and job description to help you prepare.
-                            </p>
-                        </ContentSection>
-                        <ContentSection>
-                            <h2>Pro HR (Soon - for HR)</h2>
-                            <p>
-                                Revolutionize your hiring process with HRAI, the cutting-edge AI-powered service designed to streamline and enhance candidate screening.
-                                <br/>
-                                <br/>
-                                HRAI leverages advanced artificial intelligence to automatically analyze resumes, cover
-                                letters, and job descriptions, providing you with valuable insights and recommendations to identify the best candidates quickly and efficiently
-                            </p>
-                        </ContentSection>
-                    </div>
-                </div>
-            </div>
-        </div>
+                </section>
+                <section className={ styles.plansBlock }>
+                    <ContentSection className={ styles.planBlock } as={ 'section' }>
+                        <h2>$2.95 <span>— Regular Pack</span></h2>
+                        <h3>5 Tokens</h3>
+                        <br/>
+                        <p className={ styles.planDescription }>+ CV improvements<br/>+ Cover letter<br/>+ Interview questions</p>
+                        <p className={ styles.planSuggestion }>Perfect for trying out all our services</p>
+                        <Button text={ 'Buy Pack' } />
+                    </ContentSection>
+                    <ContentSection className={ styles.planBlock } as={ 'section' }>
+                        <h2>$0.00 <span>— Free</span></h2>
+                        <h3>1 Free Token</h3>
+                        <br/>
+                        <p className={ styles.planDescription }>+ CV improvements</p>
+                        <p className={ styles.planSuggestion }>Try our CV improvements for free</p>
+                        <Button text={ 'Analyse CV' } />
+                    </ContentSection>
+                </section>
+            </article>
+            <Ads />
+        </>
     );
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './style.module.scss'
 
-export const Input = ({ value, onChange, type = 'text', label, counter, rows = 5, placeholder }: { value?: string, onChange: () => void, type?: string, label: string, counter?: number, rows?: number, placeholder?: string }) => {
+export const Input = ({ value, onChange, type = 'text', label, counter, rows = 5, placeholder }: { value?: string, onChange: (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => void, type?: string, label: string, counter?: number, rows?: number, placeholder?: string }) => {
     return (
         <label className={ styles.inputWrapper }>
             <span className={ styles.label }>{label}</span>

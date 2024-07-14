@@ -10,8 +10,5 @@ export default auth(req => {
 
 export const config = {
     matcher: [ '/analyse', '/account' ],
-    unstable_allowDynamic: [
-        '/node_modules/mongoose/**',
-    ],
 }
 

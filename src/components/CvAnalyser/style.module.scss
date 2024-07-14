@@ -1,0 +1,108 @@
+@keyframes stepsAnim {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.stepBlock {
+  box-sizing: border-box;
+  border-left: 2px solid;
+  padding-left: 20px;
+  width: 60%;
+  transition: opacity .25s;
+
+  &.stepBlockFade {
+    opacity: 0;
+    transition: opacity .25s;
+  }
+
+  h2 {
+    margin-bottom: 14px;
+  }
+  //opacity: 0;
+  //animation: stepsAnim var(--transition) forwards;
+
+  &.stepBlockOne {
+    .uploadFileField {
+      display: none;
+    }
+
+    .stepBlockTwoForm {
+      margin-top: 20px;
+
+      .stepBlockTwoFileUpload {
+        margin-bottom: 20px;
+        background: none;
+        border: 2px dashed var(--secondary-color);
+
+        span {
+          color: var(--secondary-color);
+        }
+      }
+      .stepBlockTwoSubmit {
+        margin-top: 15px;
+      }
+    }
+  }
+
+  &.stepBlockTwo {
+    width: 100%;
+
+    .featureCards {
+      margin-top: 20px;
+      margin-bottom: 15px;
+      display: flex;
+      flex-wrap: wrap;
+
+      .featureCard {
+        margin-bottom: 20px;
+        width: calc(50% - 70px);
+        cursor: pointer;
+        transition: hover var(--transition);
+
+        &:hover {
+          transition: hover var(--transition);
+          opacity: .6;
+        }
+
+        &:nth-child(odd) {
+          margin-right: 10px;
+        }
+        &:nth-child(even) {
+          margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+          width: 100%;
+          margin: 0px 0px 20px 0px !important;
+        }
+      }
+    }
+  }
+
+  &.stepBlockThree {
+    width: 100%;
+
+    p {
+      margin-bottom: 20px;
+    }
+
+    .coverLetter {
+      white-space: pre-line;
+    }
+
+    .stepBlockThreeControls {
+      display: flex;
+      button {
+        margin-right: 15px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}

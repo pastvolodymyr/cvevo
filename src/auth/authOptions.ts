@@ -3,8 +3,7 @@ import { DB } from '@/db';
 
 export const authOptions = {
     trustHost: true,
-    // @ts-ignore
-    adapter: DB(process.env.DB),
+    adapter: DB(),
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID || '',
@@ -16,6 +15,7 @@ export const authOptions = {
                     response_type: "code",
                 },
             },
+            allowDangerousEmailAccountLinking: true,
         }),
     ],
     pages: {

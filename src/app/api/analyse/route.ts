@@ -1,9 +1,20 @@
-// import OpenAI from "openai";
-import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
-// import sharp from 'sharp';
+import { isAuth } from '@/app/api/middleware/isAuth';
+import { NextResponse } from 'next/server';
+import { DB } from '@/db';
+// @ts-ignore
+import {
+    fakeRes,
+    getCoverLetterPromt,
+    getCvImprovementsPromt,
+    getInterviewQuestionsPromt,
+} from '@/app/api/analyse/claudeMessage';
+import Anthropic from '@anthropic-ai/sdk/index';
+import { jsonrepair } from 'jsonrepair'
 
-// const openai = new OpenAI();
+
+const DEFAULT_400 = 'Sorry, our AI went to sleep, please try again later';
+const IMAGE_UPLOAD_LINK = `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=60`;
+
 const anthropic = new Anthropic({
     apiKey: process.env.CLAUDE_API,
 });
@@ -15,190 +26,172 @@ const toBase64 = async (imageFile: { arrayBuffer: () => any; }) => {
     return buffer.toString('base64')
 }
 
-export const POST = async (req: NextRequest) => {
-    const formData = await req.formData();
+const isUserHasTokensHandler = async (userId: string) => {
+    const { getUser } = DB();
 
-    const imageFile = formData.get('image');
+    const user = await getUser(userId);
 
-    //Claude
-    try {
-        const formData = new FormData()
+    if(!user.isFree && !user.tokens) {
+        throw {
+            message: 'You dont have tokens',
+            type: 'tokens',
+        }
+    }
+}
 
-        // @ts-ignore
-        formData.append("image", imageFile)
+// eslint-disable-next-line no-unused-vars
+const uploadImage = async (reqFormData: { get: (arg0: string) => any; }) => {
+    const imageFile = reqFormData.get('image');
+    const formData = new FormData()
 
-        const imageUploadData = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=60`, {
-            method: 'POST',
-            body: formData,
+    formData.append("image", imageFile)
+
+    const uploadedImageData = await fetch(IMAGE_UPLOAD_LINK, {
+        method: 'POST',
+        body: formData,
+    })
+        .then(res => res?.json())
+        .catch(e => {
+            console.error('Image error 1')
+            console.error(e)
+
+            throw {
+                message: 'Image preparation error, please try again later',
+                type: 'image',
+            }
         })
-            .then(res => res?.json())
-            .catch(() => {
-                throw 'Image preparation error, please try again later'
-            })
 
+    // @ts-ignore
+    if(!uploadedImageData || uploadedImageData?.error) {
+        console.error('Image error 2')
         // @ts-ignore
-        if(!imageUploadData || imageUploadData?.error) {
-            throw 'Image preparation error, please try again later'
+        console.error(uploadedImageData?.error)
+
+        throw {
+            message: 'Image preparation error, please try again later',
+            type: 'image',
         }
-
-        // @ts-ignore
-        const imageUrlFile = await fetch(imageUploadData.data.url);
-
-        const imageBase = await toBase64(imageUrlFile);
-        // const img = new Buffer(imageBase, 'base64');
-
-        // const resizedBase = await sharp(img)
-        //     .resize(300, 300, { fit: 'contain' })
-        //     .toBuffer()
-        //     .then(resizedImageBuffer => {
-        //         const resizedImageData = resizedImageBuffer.toString('base64');
-        //
-        //         // @ts-ignore
-        //         return `data:${imageUploadData.data.image.mime};base64,${resizedImageData}`
-        //     })
-        //
-        // const parts = resizedBase.split(';');
-        // @ts-ignore
-        // const mimType: "image/jpeg" | "image/png" | "image/gif" | "image/webp" = parts[0].split(':')[1];
-        // const imageData = parts[1].split(',')[1];
-
-
-        const msg = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20240620",
-            max_tokens: 500,
-            temperature: 1,
-            system: `You will be analyzing the image to determine if it contains a professional portfolio or resume
-
-                    Your task is determining whether the image contains a professional portfolio or resume. Analyze the text carefully, looking for elements typically found in resumes or portfolios such as contact information, work experience, education, skills, or project descriptions.
-                    
-                    If you determine that the image does contain a professional portfolio or resume, respond with "Yes" and analyze the content to find 6 areas for improvement. If you determine that the image does not contain a professional portfolio or resume, respond with "No".
-                    
-                    Format your response as JSON. Use the following structure:
-                    
-                    For a "Yes" response:
-                    [
-                      {
-                        "label": "Issue name",
-                        "text": "Issue solution with examples from this image"
-                      },
-                      ...
-                    ]
-                    
-                    For a "No" response:
-                    [
-                      {
-                        "error": true
-                      }
-                    ]
-                    
-                    Ensure you provide exactly 6 improvement suggestions for a "Yes" response. Each suggestion should be specific and actionable, referencing content from the image.
-                    
-                    Write your final answer. Do not include any explanation or reasoning outside of the JSON structure.
-                    
-                    [Your JSON response here]`,
-            // system: `Is it a professional portfolio or resume (choose on of these answers and send JSON answer)? 1. Yes - analyze this CV file and find improvements to maximize its professional impact. Send only JSON with 4 problems/issues (e.g. [{label: {Issue name}, text: {Issue solution with examples from this image}}]). 2. No - send me only JSON [{error: true}].`,
-            messages: [
-                {
-                    role: "user",
-                    content: [
-                        {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": 'image/jpeg',
-                                "data": imageBase,
-                            },
-                        },
-                    ],
-                },
-                {
-                    role: "assistant",
-                    content: [
-                        {
-                            "type": "text",
-                            "text": "Here is JSON:\n[{",
-                        },
-                    ],
-                },
-            ],
-        });
-
-        // @ts-ignore
-        const aiAnswer = msg?.content[0]?.text && JSON.parse('[{' + msg.content[0].text);
-
-        if(aiAnswer?.[0]?.error) {
-            throw 'Sorry, our AI thinks there is no CV';
-        }
-
-        return NextResponse.json({
-            message: 'AI\'s answer',
-            data: aiAnswer,
-            aiData: msg,
-        }, { status: 201 });
-    } catch (e) {
-        return NextResponse.json({ error: Object.keys(e || {}).length ? e : 'Sorry, our AI went to sleep, please try again later' }, { status: 400 });
     }
 
-    // chatGPT
-    // try {
-    //     const formData = new FormData()
-    //
-    //     // @ts-ignore
-    //     formData.append("image", imageFile)
-    //
-    //     const imageUploadData = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=60`, {
-    //         method: 'POST',
-    //         body: formData,
-    //     })
-    //         .then(res => res?.json())
-    //         .catch(() => {
-    //             throw 'Image preparation error, please try again later'
-    //         })
-    //
-    //     if(!imageUploadData || imageUploadData?.error) {
-    //         throw 'Image preparation error, please try again later'
-    //     }
-    //
-    //     const imageUrl = imageUploadData?.data?.url;
-    //
-    //     try {
-    //         const completion = await openai.chat.completions.create({
-    //             messages: [
-    //                 {
-    //                     "role": "user",
-    //                     "content": [
-    //                         {
-    //                             "type": "text",
-    //                             "text": "Look CV write up to 5 short improvement/grammar about this CV, ONLY required format #{improvement name without number} ##{improvements text}, if you can\'t recognize CV text - send null",
-    //                         },
-    //                         {
-    //                             "type": "image_url",
-    //                             "image_url": {
-    //                                 "url": imageUrl,
-    //                                 "detail": "low",
-    //                             },
-    //                         },
-    //                     ],
-    //                 },
-    //             ],
-    //             model: "gpt-4o",
-    //             max_tokens: 150,
-    //         });
-    //
-    //         const answer = completion.choices[0]?.message?.content;
-    //
-    //         return NextResponse.json({
-    //             message: 'AI\'s answer',
-    //             data: answer,
-    //             aiData: completion,
-    //             imageUrl,
-    //         }, { status: 201 });
-    //     } catch (e) {
-    //         throw 'Sorry, our AI has a headache, please try again later'
-    //     }
-    // } catch (e) {
-    //     return NextResponse.json({ error: e }, { status: 400 });
-    // }
+    // @ts-ignore
+    const imageUrlFile = await fetch(uploadedImageData.data.url);
+
+    return await toBase64(imageUrlFile)
 }
+
+const claudeRequest = async (type: string, imageBase: string, jobTitle: string, jobRequirements: string) => {
+    const getPromt = () => {
+        switch (type) {
+            case 'cv':
+                return getCvImprovementsPromt();
+            case 'coverLetter':
+                return getCoverLetterPromt(jobTitle, jobRequirements);
+            case 'interview':
+                return getInterviewQuestionsPromt(jobTitle, jobRequirements)
+        }
+    };
+
+    const claudeData = await anthropic.messages.create({
+        model: "claude-3-haiku-20240307",
+        max_tokens: 4000,
+        temperature: 0.5,
+        system: getPromt(),
+        messages: [
+            {
+                role: "user",
+                content: [
+                    {
+                        "type": "image",
+                        "source": {
+                            "type": "base64",
+                            "media_type": 'image/png',
+                            "data": imageBase,
+                        },
+                    },
+                ],
+            },
+            {
+                role: "assistant",
+                content: [
+                    {
+                        "type": "text",
+                        "text": "Here is JSON:\n[",
+                    },
+                ],
+            },
+        ],
+    })
+
+    // @ts-ignore
+    const aiAnswer = JSON.parse(jsonrepair('[' + claudeData.content[0].text));
+
+    if(aiAnswer[0].noCv || !aiAnswer?.length) {
+        throw {
+            message: 'Sorry, our AI thinks there is no CV',
+            type: 'ai',
+        }
+    }
+
+    return {
+        usage: claudeData.usage,
+        data: {
+            [type]: aiAnswer,
+        },
+    }
+}
+
+const updateUserData = async (userId: string) => {
+    const { updateUser, getUser } = DB();
+
+    const user = await getUser(userId);
+
+    const params = {
+        ...user,
+        isFree: false,
+        tokens: !!user.tokens ? user.tokens - 1 : 0,
+    }
+
+    return await updateUser(params)
+}
+
+export const POST = isAuth(async function (req) {
+    // const reqFormData = await req.formData();
+
+    try {
+        // await isUserHasTokensHandler(req.auth?.user?.id);
+
+        // const imageBase = await uploadImage(reqFormData);
+        //
+        // const jobTitle = reqFormData.get('jobTitle');
+        // const jobRequirements = reqFormData.get('jobRequirements');
+        // const types = reqFormData.get('types');
+
+        // const aiAnswer = await Promise.all([
+        //     ...(types.includes('cv') ? [ claudeRequest('cv', imageBase, jobTitle, jobRequirements) ] : []),
+        //     ...(types.includes('coverLetter') ? [ claudeRequest('coverLetter', imageBase, jobTitle, jobRequirements) ] : []),
+        //     ...(types.includes('interview') ? [ claudeRequest('interview', imageBase, jobTitle, jobRequirements) ] : []),
+        // ])
+
+        // const updatedUser = await updateUserData(req.auth?.user?.id);
+
+        // return NextResponse.json({
+        //     data: aiAnswer.reduce((sum, answer) => ({
+        //         ...sum,
+        //         ...answer.data,
+        //     }), {}),
+        //     usage: aiAnswer.reduce((sum, answer) => ({
+        //         ...sum,
+        //         [Object.keys(answer.data)[0]]: answer.usage,
+        //     }), {}),
+        //     // user: updatedUser,
+        // }, { status: 201 });
+
+        return NextResponse.json(fakeRes, { status: 201 });
+    } catch (e) {
+        return NextResponse.json({
+            error: Object.keys(e || {}).length ? e : DEFAULT_400,
+        }, { status: 400 });
+    }
+})
 
 export const runtime = "edge";

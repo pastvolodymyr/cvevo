@@ -1,34 +1,18 @@
-/**
- * <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px"}}>
- *  <p>An official <a href="https://developers.cloudflare.com/d1/">Cloudflare D1</a> adapter for Auth.js / NextAuth.js.</p>
- *  <a href="https://developers.cloudflare.com/d1/">
- *   <img style={{display: "block"}} src="/img/adapters/d1.svg" width="48" />
- *  </a>
- * </div>
- *
- * ## Warning
- * This adapter is not developed or maintained by Cloudflare and they haven't declared the D1 api stable.  The author will make an effort to keep this adapter up to date.
- * The adapter is compatible with the D1 api as of March 22, 2023.
- *
- * ## Installation
- *
- * ```bash npm2yarn
- * npm install next-auth @auth/d1-adapter
- * ```
- *
- * @module @auth/d1-adapter
- */
-
 import type { D1Database as WorkerDatabase } from "@cloudflare/workers-types"
 import type { D1Database as MiniflareD1Database } from "@miniflare/d1"
 import {
-    type Adapter,
     type AdapterSession,
     type AdapterUser,
-    // type AdapterAccount,
     type VerificationToken as AdapterVerificationToken,
     isDate,
 } from "@auth/core/adapters"
+
+interface ExtendedAdapterUser extends AdapterUser {
+    isFree: boolean,
+    tokens: number
+}
+
+
 import {
     // CREATE_ACCOUNT_SQL,
     CREATE_SESSION_SQL,
@@ -49,6 +33,8 @@ import {
     UPDATE_SESSION_BY_SESSION_TOKEN_SQL,
     UPDATE_USER_BY_ID_SQL,
 } from "./queries"
+// @ts-ignore
+import { Awaitable } from '@auth/core/src/types';
 
 export { up } from "./migrations"
 
@@ -155,11 +141,13 @@ export async function deleteRecord(
     }
 }
 
-export function DB(db: D1Database): Adapter {
+export function DB() {
     // we need to run migrations if we dont have the right tables
+    // @ts-ignore
+    const db: D1Database = process.env.DB
 
     return {
-        async createUser(user) {
+        async createUser(user: ExtendedAdapterUser) {
             const id: string = crypto.randomUUID()
             const createBindings = [
                 id,
@@ -168,7 +156,7 @@ export function DB(db: D1Database): Adapter {
             ]
             const getBindings = [ id ]
 
-            const newUser = await createRecord<AdapterUser>(
+            const newUser = await createRecord<ExtendedAdapterUser>(
                 db,
                 CREATE_USER_SQL,
                 createBindings,
@@ -179,36 +167,43 @@ export function DB(db: D1Database): Adapter {
             if (newUser) return newUser
             throw new Error("Error creating user: Cannot get user after creation.")
         },
-        async getUser(id) {
-            return await getRecord<AdapterUser>(db, GET_USER_BY_ID_SQL, [ id ])
+        async getUser(id: string): Awaitable<ExtendedAdapterUser | null> {
+            return await getRecord<ExtendedAdapterUser>(db, GET_USER_BY_ID_SQL, [ id ])
         },
-        async getUserByEmail(email) {
-            return await getRecord<AdapterUser>(db, GET_USER_BY_EMAIL_SQL, [ email ])
+        async getUserByEmail(email: string) {
+            return await getRecord<ExtendedAdapterUser>(db, GET_USER_BY_EMAIL_SQL, [ email ])
         },
         async getUserByAccount() {
-            // return await getRecord<AdapterUser>(db, GET_USER_BY_ACCOUNTL_SQL, [
+            // return await getRecord<ExtendedAdapterUser>(db, GET_USER_BY_ACCOUNTL_SQL, [
             //     providerAccountId,
             //     provider,
             // ])
             return null
         },
-        async updateUser(user) {
-            const params = await getRecord<AdapterUser>(db, GET_USER_BY_ID_SQL, [
-                user.id,
-            ])
+        // async changeUserData(userId: string, params) {
+        //     const user = await getRecord<ExtendedAdapterUser>(db, GET_USER_BY_ID_SQL, [ userId ])
+        //
+        //
+        // },
+        async updateUser(params: ExtendedAdapterUser) {
+            // const params = await getRecord<ExtendedAdapterUser>(db, GET_USER_BY_ID_SQL, [
+            //     user.id,
+            // ])
 
             if (params) {
                 // copy any properties not in the update into the existing one and use that for bind params
                 // covers the scenario where the user arg doesnt have all of the current users properties
-                Object.assign(params, user)
                 const res = await updateRecord(db, UPDATE_USER_BY_ID_SQL, [
+                    params.id,
                     params.name,
                     params.email,
+                    params.tokens,
+                    params.isFree,
                     params.id,
                 ])
 
                 if (res.success) {
-                    const user = await getRecord<AdapterUser>(db, GET_USER_BY_ID_SQL, [
+                    const user = await getRecord<ExtendedAdapterUser>(db, GET_USER_BY_ID_SQL, [
                         params.id,
                     ])
 
@@ -220,7 +215,7 @@ export function DB(db: D1Database): Adapter {
             }
             throw new Error("Error updating user: Failed to run the update SQL.")
         },
-        async deleteUser(userId) {
+        async deleteUser(userId: string) {
             // miniflare doesn't support batch operations or multiline sql statements
             // await deleteRecord(db, DELETE_ACCOUNT_BY_USER_ID_SQL, [ userId ])
             await deleteRecord(db, DELETE_SESSION_BY_USER_ID_SQL, [ userId ])
@@ -250,14 +245,7 @@ export function DB(db: D1Database): Adapter {
 
             return null
         },
-        async unlinkAccount() {
-            // await deleteRecord(
-            //     db,
-            //     DELETE_ACCOUNT_BY_PROVIDER_AND_PROVIDER_ACCOUNT_ID_SQL,
-            //     [ provider, providerAccountId ]
-            // )
-        },
-        async createSession({ sessionToken, userId, expires }) {
+        async createSession({ sessionToken, userId, expires }: { sessionToken: string, userId: string, expires: Date }) {
             const id = crypto.randomUUID()
             const createBindings = [ id, sessionToken, userId, expires.toISOString() ]
             const getBindings = [ sessionToken ]
@@ -272,7 +260,7 @@ export function DB(db: D1Database): Adapter {
             if (session) return session
             throw new Error(`Couldn't create session`)
         },
-        async getSessionAndUser(sessionToken) {
+        async getSessionAndUser(sessionToken: string) {
             const session: any = await getRecord<AdapterSession>(
                 db,
                 GET_SESSION_BY_TOKEN_SQL,
@@ -281,7 +269,7 @@ export function DB(db: D1Database): Adapter {
 
             if (session === null) return null
 
-            const user = await getRecord<AdapterUser>(db, GET_USER_BY_ID_SQL, [
+            const user = await getRecord<ExtendedAdapterUser>(db, GET_USER_BY_ID_SQL, [
                 session.userId,
             ])
 
@@ -289,7 +277,7 @@ export function DB(db: D1Database): Adapter {
 
             return { session, user }
         },
-        async updateSession({ sessionToken, expires }) {
+        async updateSession({ sessionToken, expires }: { sessionToken: string, expires: Date }) {
             if (expires === undefined) {
                 await deleteRecord(db, DELETE_SESSION_SQL, [ sessionToken ])
                 return null
@@ -311,11 +299,11 @@ export function DB(db: D1Database): Adapter {
                 .bind(expires?.toISOString(), sessionToken)
                 .first()
         },
-        async deleteSession(sessionToken) {
+        async deleteSession(sessionToken: string) {
             await deleteRecord(db, DELETE_SESSION_SQL, [ sessionToken ])
             return null
         },
-        async createVerificationToken({ identifier, expires, token }) {
+        async createVerificationToken({ identifier, expires, token }: { identifier: string, expires: Date, token: string }) {
             return await createRecord(
                 db,
                 CREATE_VERIFICATION_TOKEN_SQL,
@@ -324,7 +312,7 @@ export function DB(db: D1Database): Adapter {
                 [ identifier, token ]
             )
         },
-        async useVerificationToken({ identifier, token }) {
+        async useVerificationToken({ identifier, token }: { identifier: string, token: string }) {
             const verificationToken = await getRecord<AdapterVerificationToken>(
                 db,
                 GET_VERIFICATION_TOKEN_BY_IDENTIFIER_AND_TOKEN_SQL,

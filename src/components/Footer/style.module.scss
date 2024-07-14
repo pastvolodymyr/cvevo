@@ -1,18 +1,16 @@
 .footer {
   width: 100%;
+  padding: 100px 30px 30px 30px;
+  width: 100%;
+  max-width: 1084px;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 
+  p, a {
+    font-size: 16px;
+  }
 
-  .footerWrapper {
-    padding: 100px 30px 30px 30px;
-    width: 100%;
-    max-width: 1024px;
-    display: flex;
-    justify-content: space-between;
-
-    p, a {
-      font-size: 16px;
-    }
+  @media (max-width: 768px) {
+    padding: 50px 20px 20px 20px;
   }
 }
