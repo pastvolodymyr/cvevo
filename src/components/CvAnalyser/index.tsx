@@ -219,7 +219,7 @@ export const CvAnalyser = () => {
                                     <div key={ index }>
                                         <h2>{question}</h2>
                                         <p>{answer}</p>
-                                        <Link prefetch={ false } aria-label={ `Recap - ${answer}` } href={ recapLink }>Recap Link</Link>
+                                        <Link aria-label={ `Recap - ${answer}` } href={ recapLink }>Recap Link</Link>
                                     </div>
                                 ))
                             }
