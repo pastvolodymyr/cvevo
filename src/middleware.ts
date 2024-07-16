@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
 
 export default auth(req => {
-    const url = new URL('http://localhost:3000/analyse?_rsc=1wtp7');
+    const url = new URL(req.url);
 
     if (!req.auth && !url.searchParams.has('_rsc')) {
         const newUrl = new URL(`/api/signin?callbackUrl=${req.url}`, req.nextUrl.origin)
