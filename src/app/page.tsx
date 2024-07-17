@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { Button, ContentSection } from '@/components/UI';
+import { Button, ContentSection, Icon } from '@/components/UI';
 import CvAnalyseIcon from '@/svg/cv_analyse.svg';
 import CoverIcon from '@/svg/cover.svg';
 import QuestionIcon from '@/svg/question.svg';
@@ -18,7 +18,7 @@ export default function Home() {
                     Whether you're a recent graduate, a seasoned professional,
                     or looking to pivot your career, cvevo is here to elevate your career to the next level!
                 </p>
-                <Link prefetch={false} aria-label='Start analysing your CV' href={ '/analyse' }>
+                <Link prefetch={ false } aria-label='Start analysing your CV' href={ '/analyse' }>
                     <Button text={ 'Analyse your CV' }/>
                 </Link>
             </header>
@@ -28,15 +28,15 @@ export default function Home() {
                         <h2>Features</h2>
                         <div className={ styles.descriptionContentPart }>
                             <p>
-                                <span><CvAnalyseIcon viewBox="0 0 17 21"/>CV improvements </span>
+                                <span><Icon icon={ 'ClipboardList' }/>CV improvements </span>
                                 — get personalized feedback to refine your resume and catch employers' attention.
                             </p>
                             <p>
-                                <span><CoverIcon viewBox="0 0 20 20"/>Cover Letter </span>
+                                <span><Icon icon={ 'EnvelopeOpenText' }/>Cover Letter </span>
                                 — create unique cover letter tailored to your strengths and job descriptions.
                             </p>
                             <p>
-                                <span><QuestionIcon viewBox="0 0 21 21"/>Interview questions </span>
+                                <span><Icon icon={ 'CircleQuestion' }/>Interview questions </span>
                                 — receive tailored interview questions based on your CV and job description to help you prepare.
                             </p>
                         </div>

@@ -25,7 +25,7 @@ export default function Pricing() {
                 </section>
                 <section className={ styles.plansBlock }>
                     <ContentSection className={ styles.planBlock } as={ 'section' }>
-                        <h2>$2.95 <span>— Regular Pack</span></h2>
+                        <h2>$2.99 <span>— Start Pack</span></h2>
                         <h3>5 Tokens</h3>
                         <br/>
                         <p className={ styles.planDescription }>+ CV improvements<br/>+ Cover letter<br/>+ Interview questions</p>
@@ -33,12 +33,20 @@ export default function Pricing() {
                         <Button text={ 'Buy Pack' } />
                     </ContentSection>
                     <ContentSection className={ styles.planBlock } as={ 'section' }>
+                        <h2>$4.99 <span>— Pro Pack</span></h2>
+                        <h3>10 Tokens</h3>
+                        <br/>
+                        <p className={ styles.planDescription }>+ CV improvements<br/>+ Cover letter<br/>+ Interview questions</p>
+                        <p className={ styles.planSuggestion }>Ideal for candidates who are serious about their goals</p>
+                        <Button text={ 'Buy Pack' } />
+                    </ContentSection>
+                    <ContentSection className={ styles.planBlock } as={ 'section' }>
                         <h2>$0.00 <span>— Free</span></h2>
-                        <h3>1 Free Token</h3>
+                        <h3>1 Token</h3>
                         <br/>
                         <p className={ styles.planDescription }>+ CV improvements</p>
                         <p className={ styles.planSuggestion }>Try our CV improvements for free</p>
-                        <Button text={ 'Analyse CV' } />
+                        <Button text={ 'Analyse your CV' } />
                     </ContentSection>
                 </section>
             </article>

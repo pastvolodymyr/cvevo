@@ -13,4 +13,12 @@
   @media (max-width: 768px) {
     padding: 50px 20px 30px 20px;
   }
+
+  .links {
+    display: flex;
+    align-items: center;
+    a {
+      margin-left: 20px;
+    }
+  }
 }

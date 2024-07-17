@@ -8,7 +8,10 @@ export const Footer = () => {
     return (
         <footer className={ styles.footer }>
             <p>© { new Date().getFullYear() } cvevo</p>
-            <p>by <LinkButton ariaLabel={ 'Project by Volodymyr Pastukh' } target={ '_blank' } text='Volodymyr Pastukh' href={ 'https://www.linkedin.com/in/pastukh/' }/></p>
+            <div className={ styles.links }>
+                <LinkButton ariaLabel={ 'Privacy policy page' } text='Privacy Policy' href={ '/privacy' }/>
+                <LinkButton ariaLabel={ 'Contact page' } text='Contact' href={ '/privacy#contact' }/>
+            </div>
         </footer>
     );
 };

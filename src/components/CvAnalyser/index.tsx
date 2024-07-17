@@ -1,17 +1,18 @@
 import React, { useRef, useState } from 'react';
 import cx from 'classnames';
-import Link from 'next/link';
 
-import { Button, ContentSection, Input } from '@/components/UI';
-import { ContentTabsSection } from '@/components/UI/ContentTabsSection';
+import { Button, Input } from '@/components/UI';
 import { validateFile } from '@/utils/helpers';
 
+import { StepTwo } from './StepTwo';
+import { Result } from './Result';
+
 import styles from './style.module.scss';
-// import { updateUserData } from '@/store/slices/user.slice';
 
 export const CvAnalyser = () => {
     const [ stepNumber, setStepNumber ] = useState(1);
-    const [ awaitStepNumber, setAwaitStepNumber ] = useState(1);
+    const [ fade, setFade ] = useState(false);
+    const [ analyseLoading, setAnalyseLoading ] = useState(false);
     const [ analyseResult, setAnalyseResult ] = useState(null);
     const [ fieldsData, setFieldsData ] = useState<{
         file?: File,
@@ -33,7 +34,7 @@ export const CvAnalyser = () => {
         onChangeStep(1);
     }
 
-    const onAnalyse = () => {
+    const onAnalyse = (types: string[]) => {
         const formData = new FormData()
 
         // @ts-ignore
@@ -42,6 +43,10 @@ export const CvAnalyser = () => {
         formData.append("jobTitle", fieldsData.jobTitle);
         // @ts-ignore
         formData.append("jobRequirements", fieldsData.jobRequirements);
+        // @ts-ignore
+        formData.append("types", types);
+
+        setAnalyseLoading(true)
 
         fetch('/api/analyse', {
             method: 'POST',
@@ -49,7 +54,7 @@ export const CvAnalyser = () => {
         })
             .then(res => res.json())
             .then(res => {
-
+                setAnalyseLoading(false)
                 // if(res.data && res.user && !res.error) {
                 //     // @ts-ignore
                 //     setCvImprovements(res.data);
@@ -93,10 +98,11 @@ export const CvAnalyser = () => {
     />;
 
     const onChangeStep = (step: number) => {
-        setStepNumber(step);
+        setFade(true);
 
         setTimeout(() => {
-            setAwaitStepNumber(step)
+            setFade(false);
+            setStepNumber(step)
         }, 300)
     }
 
@@ -141,103 +147,15 @@ export const CvAnalyser = () => {
         </section>
     )
 
-    const getStepTwo = () => (
-        <section className={ cx(styles.stepBlock, styles.stepBlockTwo, { [styles.stepBlockFade]: stepNumber !== 2 }) }>
-            <h2>Step Two</h2>
-            <p>Select what you want to receive (each feature cost 1 token)</p>
-            <section className={ styles.featureCards }>
-                <ContentSection className={ styles.featureCard } as='section'>
-                    <h2>CV improvements</h2>
-                    <p>
-                        Get personalized feedback to refine your resume and catch employers' attention
-                    </p>
-                </ContentSection>
-                <ContentSection className={ styles.featureCard } as='section'>
-                    <h2>Cover letter</h2>
-                    <p>
-                        Create unique cover letter tailored to your strengths and job descriptions.
-                    </p>
-                </ContentSection>
-                <ContentSection className={ styles.featureCard } as='section'>
-                    <h2>Interview questions</h2>
-                    <p>
-                        Receive tailored interview questions based on your CV and job description to help you prepare.
-                    </p>
-                </ContentSection>
-            </section>
-            <Button text={ 'Analyse (2 tokens)' } onClick={ () => onAnalyse() }/>
-        </section>
-    )
-
-    const getResult = () => (
-        <section className={ cx(styles.stepBlock, styles.stepBlockThree, { [styles.stepBlockFade]: stepNumber !== 3 }) }>
-            <h2>Finally!</h2>
-            <p>Be well-prepared and self-assured with tools designed to help you succeed</p>
-            <div className={ styles.stepBlockThreeControls } style={{ display: 'flex' }}>
-                <Button icon={ 'RotateRight' } text={ 'Re-analyse' } onClick={ onReset }/>
-                <Button icon={ 'FileArrowDown' } text={ 'PDF' } onClick={ () => onChangeStep(1) }/>
-            </div>
-            <br/>
-            <ContentTabsSection as='section' tabs={ [
-                {
-                    label: 'CV Improvements',
-                    icon: 'ClipboardList',
-                    content: (
-                        <section className={ styles.cvImprovements }>
-                            {
-                                // @ts-ignore
-                                analyseResult?.data?.cv.map(({ label, text }, index) => (
-                                    <div key={ index }>
-                                        <h2>{label}</h2>
-                                        <p>{text}</p>
-                                    </div>
-                                ))
-                            }
-                        </section>
-                    ),
-                },
-                {
-                    icon: 'EnvelopeOpenText',
-                    label: 'Cover letter',
-                    content: (
-                        <section className={ styles.coverLetter }>
-                            <p>
-                                {/*@ts-ignore*/}
-                                {analyseResult?.data?.coverLetter[0].coverLetter}
-                            </p>
-                        </section>
-                    ),
-                },
-                {
-                    icon: 'CircleQuestion',
-                    label: 'Interview questions',
-                    content: (
-                        <section className={ styles.cvImprovements }>
-                            {
-                                // @ts-ignore
-                                analyseResult?.data?.interview.map(({ question, answer, recapLink }, index) => (
-                                    <div key={ index }>
-                                        <h2>{question}</h2>
-                                        <p>{answer}</p>
-                                        <Link prefetch={false} aria-label={ `Recap - ${answer}` } href={ recapLink }>Recap Link</Link>
-                                    </div>
-                                ))
-                            }
-                        </section>
-                    ),
-                },
-            ] }/>
-        </section>
-    )
-
     const getStep = () => {
-        switch (awaitStepNumber) {
+        switch (stepNumber) {
             case 1:
                 return getStepOne();
             case 2:
-                return getStepTwo();
+                return <StepTwo onAnalyse={ onAnalyse } loading={ analyseLoading }/>
             case 3:
-                return getResult();
+                // @ts-ignore
+                return <Result onReset={ onReset } analyseResult={ analyseResult } onChangeStep={ onChangeStep }/>;
 
             default:
                 return getStepOne();
@@ -245,7 +163,7 @@ export const CvAnalyser = () => {
     }
 
     return (
-        <article className={ styles.cvAnalyser }>
+        <article className={ cx( styles.cvAnalyser, { [styles.fade]: fade }) }>
             {
                 getStep()
             }

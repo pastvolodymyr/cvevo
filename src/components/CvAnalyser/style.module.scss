@@ -7,6 +7,16 @@
   }
 }
 
+.cvAnalyser {
+  transition: opacity .25s;
+
+  &.fade {
+    opacity: 0;
+    transition: opacity .25s;
+  }
+}
+
+
 .stepBlock {
   box-sizing: border-box;
   border-left: 2px solid;
@@ -14,16 +24,9 @@
   width: 60%;
   transition: opacity .25s;
 
-  &.stepBlockFade {
-    opacity: 0;
-    transition: opacity .25s;
-  }
-
   h2 {
     margin-bottom: 14px;
   }
-  //opacity: 0;
-  //animation: stepsAnim var(--transition) forwards;
 
   &.stepBlockOne {
     .uploadFileField {
@@ -44,6 +47,7 @@
           display: block;
           text-overflow: ellipsis;
           overflow: hidden;
+          white-space: nowrap;
         }
       }
 
@@ -58,31 +62,28 @@
 
     .featureCards {
       margin-top: 20px;
-      margin-bottom: 15px;
       display: flex;
       flex-wrap: wrap;
+      justify-content: space-between;
+      row-gap: 20px;
+      margin-bottom: 40px;
 
       .featureCard {
-        margin-bottom: 20px;
-        width: calc(50% - 70px);
+        width: calc(50% - 10px);
         cursor: pointer;
-        transition: hover var(--transition);
+        border: 1px dashed white;
+        opacity: 0.9;
+        transition: opacity var(--transition);
 
-        &:hover {
-          transition: hover var(--transition);
-          opacity: .6;
-        }
-
-        &:nth-child(odd) {
-          margin-right: 10px;
-        }
-        &:nth-child(even) {
-          margin-left: 10px;
+        &:hover, &.featureCardActive {
+          opacity: 1;
+          transition: opacity var(--transition);
+          border: 1px solid var(--secondary-color);
         }
 
         @media (max-width: 768px) {
           width: 100%;
-          margin: 0px 0px 20px 0px !important;
+          margin: 0px 0px 0px 0px !important;
         }
       }
     }
@@ -97,12 +98,44 @@
 
     .coverLetter {
       white-space: pre-line;
+
+      p {
+        margin: 0;
+      }
     }
 
     .stepBlockThreeControls {
       display: flex;
       button {
         margin-right: 15px;
+      }
+    }
+
+    .cvImprovements {
+      display: flex;
+      flex-wrap: wrap;
+      row-gap: 30px;
+      justify-content: space-between;
+
+      .cvImprovement {
+        width: calc(50% - 10px);
+
+        p {
+          margin: 0;
+        }
+      }
+    }
+
+    .interviews {
+      display: flex;
+      flex-wrap: wrap;
+
+      .interview {
+        margin-bottom: 40px;
+
+        &:last-child {
+          margin: 0;
+        }
       }
     }
   }
