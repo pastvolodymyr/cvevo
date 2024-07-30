@@ -12,7 +12,7 @@ const DEFAULT_400 = {
     message: 'Sorry, our AI went to sleep, please try again later',
     type: 'ai',
 };
-const IMAGE_UPLOAD_LINK = `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=600`;
+const IMAGE_UPLOAD_LINK = `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=60`;
 
 const anthropic = new Anthropic({
     apiKey: process.env.CLAUDE_API,

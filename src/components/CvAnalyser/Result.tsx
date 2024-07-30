@@ -29,52 +29,58 @@ export const Result = ({
             </div>
             <br/>
             <ContentTabsSection as='section' tabs={ [
-                {
-                    label: 'CV Improvements',
-                    icon: 'ClipboardList',
-                    content: (
-                        <section className={ styles.cvImprovements }>
-                            {
+                ...analyseResult?.cv?.length
+                    ? [{
+                        label: 'CV Improvements',
+                        icon: 'ClipboardList',
+                        content: (
+                            <section className={ styles.cvImprovements }>
+                                {
+                                    // @ts-ignore
+                                    analyseResult?.cv?.map(({ label, text }, index) => (
+                                        <div key={ index } className={ styles.cvImprovement }>
+                                            <h2>{label}</h2>
+                                            <p>{text}</p>
+                                        </div>
+                                    ))
+                                }
+                            </section>
+                        ),
+                    }]
+                    : [],
+                ...analyseResult?.coverLetter?.[0]?.coverLetter || analyseResult?.coverLetter
+                    ? [{
+                        icon: 'EnvelopeOpenText',
+                        label: 'Cover letter',
+                        content: (
+                            <section className={ styles.coverLetter }>
+                                <p>
+                                    {analyseResult?.coverLetter?.[0]?.coverLetter || analyseResult?.coverLetter}
+                                </p>
+                            </section>
+                        ),
+                    }]
+                    : [],
+                ...analyseResult?.interview?.length
+                    ? [{
+                        icon: 'CircleQuestion',
+                        label: 'Interview questions',
+                        content: (
+                            <section className={ styles.interviews }>
+                                {
                                 // @ts-ignore
-                                analyseResult?.cv.map(({ label, text }, index) => (
-                                    <div key={ index } className={ styles.cvImprovement }>
-                                        <h2>{label}</h2>
-                                        <p>{text}</p>
-                                    </div>
-                                ))
-                            }
-                        </section>
-                    ),
-                },
-                {
-                    icon: 'EnvelopeOpenText',
-                    label: 'Cover letter',
-                    content: (
-                        <section className={ styles.coverLetter }>
-                            <p>
-                                {analyseResult?.coverLetter[0].coverLetter || analyseResult?.coverLetter}
-                            </p>
-                        </section>
-                    ),
-                },
-                {
-                    icon: 'CircleQuestion',
-                    label: 'Interview questions',
-                    content: (
-                        <section className={ styles.interviews }>
-                            {
-                                // @ts-ignore
-                                analyseResult?.interview.map(({ question, answer, recapLink }, index) => (
-                                    <div key={ index } className={ styles.interview }>
-                                        <h2>{question}</h2>
-                                        <p>{answer}</p>
-                                        <LinkButton aria-label={ `Recap - ${answer}` } href={ recapLink } text={ 'Recap Link' }/>
-                                    </div>
-                                ))
-                            }
-                        </section>
-                    ),
-                },
+                                    analyseResult?.interview?.map(({ question, answer, recapLink }, index) => (
+                                        <div key={ index } className={ styles.interview }>
+                                            <h2>{question}</h2>
+                                            <p>{answer}</p>
+                                            <LinkButton aria-label={ `Recap - ${answer}` } href={ recapLink } text={ 'Recap Link' }/>
+                                        </div>
+                                    ))
+                                }
+                            </section>
+                        ),
+                    }]
+                    : [],
             ] }/>
         </section>
     )
