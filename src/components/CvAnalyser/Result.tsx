@@ -14,11 +14,9 @@ export const Result = ({
     onReset: () => void,
     onChangeStep: (step: number) => void,
     analyseResult: {
-        data: {
-            cv: any,
-            coverLetter: any,
-            interview: any
-        }
+        cv: any,
+        coverLetter: any,
+        interview: any
     }
 }) => {
     return (
@@ -38,7 +36,7 @@ export const Result = ({
                         <section className={ styles.cvImprovements }>
                             {
                                 // @ts-ignore
-                                analyseResult?.data?.cv.map(({ label, text }, index) => (
+                                analyseResult?.cv.map(({ label, text }, index) => (
                                     <div key={ index } className={ styles.cvImprovement }>
                                         <h2>{label}</h2>
                                         <p>{text}</p>
@@ -54,7 +52,7 @@ export const Result = ({
                     content: (
                         <section className={ styles.coverLetter }>
                             <p>
-                                {analyseResult?.data?.coverLetter[0].coverLetter}
+                                {analyseResult?.coverLetter[0].coverLetter || analyseResult?.coverLetter}
                             </p>
                         </section>
                     ),
@@ -66,7 +64,7 @@ export const Result = ({
                         <section className={ styles.interviews }>
                             {
                                 // @ts-ignore
-                                analyseResult?.data?.interview.map(({ question, answer, recapLink }, index) => (
+                                analyseResult?.interview.map(({ question, answer, recapLink }, index) => (
                                     <div key={ index } className={ styles.interview }>
                                         <h2>{question}</h2>
                                         <p>{answer}</p>

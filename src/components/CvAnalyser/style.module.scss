@@ -36,6 +36,13 @@
     .stepBlockTwoForm {
       margin-top: 20px;
 
+      .error {
+        display: block;
+        margin-bottom: 17px;
+        margin-top: -5px;
+        color: #9c3131
+      }
+
       .stepBlockTwoFileUpload {
         margin-bottom: 20px;
         background: none;

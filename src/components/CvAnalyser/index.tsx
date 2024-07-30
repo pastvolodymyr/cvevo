@@ -10,6 +10,7 @@ import { Result } from './Result';
 import styles from './style.module.scss';
 
 export const CvAnalyser = () => {
+    const [ error, setError ] = useState(null);
     const [ stepNumber, setStepNumber ] = useState(1);
     const [ fade, setFade ] = useState(false);
     const [ analyseLoading, setAnalyseLoading ] = useState(false);
@@ -67,13 +68,33 @@ export const CvAnalyser = () => {
                 //     setError(res.error);
                 // }
 
+                // console.log(res)
+
                 // @ts-ignore
-                setAnalyseResult(res)
+                if(res.error) {
+                    // @ts-ignore
+                    if(res.error.type === 'aiImage' || res.error.type === 'image') {
+                        onChangeStep(1)
+                        // @ts-ignore
+                        setError(res.error.message);
+
+                        return;
+                    }
+
+                    // @ts-ignore
+                    setError(res.error?.message);
+
+                    return
+                }
+
+                // @ts-ignore
+                setAnalyseResult(res.data)
                 onChangeStep(3)
             })
     }
 
     const onUploadFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setError(null);
         const file = event.target.files?.[0];
         const fileValid = validateFile( [
             'image/jpeg',
@@ -82,7 +103,8 @@ export const CvAnalyser = () => {
         ], 30 * 1024 * 1024, file)
 
         if(!fileValid.isValid) {
-            // setError(fileValid.message);
+            // @ts-ignore
+            setError(fileValid.message);
 
             return
         }
@@ -117,6 +139,7 @@ export const CvAnalyser = () => {
                     className={ styles.stepBlockTwoFileUpload }
                     onClick={ openUploadWindow }
                 />
+                <span className={ styles.error }>{ error && error }</span>
                 <Input
                     value={ fieldsData.jobTitle }
                     placeholder={ 'Front end developer' }
