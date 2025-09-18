@@ -1,204 +1,222 @@
-// import OpenAI from "openai";
-import { NextRequest, NextResponse } from 'next/server';
-import Anthropic from '@anthropic-ai/sdk';
-// import sharp from 'sharp';
+import { isAuth } from '@/app/api/middleware/isAuth';
+import { NextResponse } from 'next/server';
+import { DB } from '@/db';
+import { jsonrepair } from 'jsonrepair'
+import OpenAI from "openai";
+import { coverLetterPromt, cvImprovementsPromt, interviewPromt, checkImagePromt } from '@/app/api/analyse/aiMessages';
 
-// const openai = new OpenAI();
-const anthropic = new Anthropic({
-    apiKey: process.env.CLAUDE_API,
-});
+const openai = new OpenAI();
+
+const DEFAULT_400 = {
+    message: 'Sorry, our AI went to sleep, please try again later',
+    type: 'ai',
+};
+const IMAGE_UPLOAD_LINK = `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=60`;
+
+const detectImageType = (buffer: Buffer): string => {
+    // Check the file signature (first few bytes) to determine the image type
+    if (buffer.slice(0, 4).equals(Buffer.from([0x89, 0x50, 0x4E, 0x47]))) {
+        return 'image/png';
+    } else if (buffer.slice(0, 3).equals(Buffer.from([0xFF, 0xD8, 0xFF]))) {
+        return 'image/jpeg';
+    } else if (buffer.slice(0, 6).equals(Buffer.from([0x47, 0x49, 0x46, 0x38, 0x37, 0x61])) ||
+        buffer.slice(0, 6).equals(Buffer.from([0x47, 0x49, 0x46, 0x38, 0x39, 0x61]))) {
+        return 'image/gif';
+    } else if (buffer.slice(0, 8).equals(Buffer.from([0x42, 0x4D]))) {
+        return 'image/bmp';
+    } else if (buffer.slice(0, 8).equals(Buffer.from([0x49, 0x49, 0x2A, 0x00])) ||
+        buffer.slice(0, 8).equals(Buffer.from([0x4D, 0x4D, 0x00, 0x2A]))) {
+        return 'image/tiff';
+    } else {
+        return 'unknown';
+    }
+}
 
 const toBase64 = async (imageFile: { arrayBuffer: () => any; }) => {
     const arrayBuffer = await imageFile.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    return buffer.toString('base64')
+    const imageType = detectImageType(buffer);
+
+    return {
+        base64: buffer.toString('base64'),
+        imageType
+    };
 }
 
-export const POST = async (req: NextRequest) => {
-    const formData = await req.formData();
+const isUserHasTokensHandler = async (userId: string) => {
+    const { getUser } = DB();
 
-    const imageFile = formData.get('image');
+    const user = await getUser(userId);
 
-    //Claude
-    try {
-        const formData = new FormData()
-
-        // @ts-ignore
-        formData.append("image", imageFile)
-
-        const imageUploadData = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=60`, {
-            method: 'POST',
-            body: formData,
-        })
-            .then(res => res?.json())
-            .catch(() => {
-                throw 'Image preparation error, please try again later'
-            })
-
-        // @ts-ignore
-        if(!imageUploadData || imageUploadData?.error) {
-            throw 'Image preparation error, please try again later'
+    if(!user.isFree && !user.tokens) {
+        throw {
+            message: 'You dont have tokens',
+            type: 'tokens',
         }
+    }
+}
 
+// eslint-disable-next-line no-unused-vars
+const uploadImage = async (reqFormData: { get: (arg0: string) => any; }) => {
+    const imageFile = reqFormData.get('image');
+    const formData = new FormData()
+
+    formData.append("image", imageFile)
+
+    const uploadedImageData = await fetch(IMAGE_UPLOAD_LINK, {
+        method: 'POST',
+        body: formData,
+    })
+        .then(res => res?.json())
+        .catch(e => {
+            console.error('Image error 1')
+            console.error(e)
+
+            throw {
+                message: 'Image preparation error, please try again later',
+                type: 'image',
+            }
+        })
+
+    // @ts-ignore
+    if(!uploadedImageData || uploadedImageData?.error) {
+        console.error('Image error 2')
         // @ts-ignore
-        const imageUrlFile = await fetch(imageUploadData.data.url);
+        console.error(uploadedImageData?.error)
 
-        const imageBase = await toBase64(imageUrlFile);
-        // const img = new Buffer(imageBase, 'base64');
+        throw {
+            message: 'Image preparation error, please try again later',
+            type: 'image',
+        }
+    }
+    // console.log(uploadedImageData)
 
-        // const resizedBase = await sharp(img)
-        //     .resize(300, 300, { fit: 'contain' })
-        //     .toBuffer()
-        //     .then(resizedImageBuffer => {
-        //         const resizedImageData = resizedImageBuffer.toString('base64');
-        //
-        //         // @ts-ignore
-        //         return `data:${imageUploadData.data.image.mime};base64,${resizedImageData}`
-        //     })
-        //
-        // const parts = resizedBase.split(';');
+    // @ts-ignore
+    const imageUrlFile = await fetch(uploadedImageData.data?.medium?.url || uploadedImageData.data?.url);
+    const base = await toBase64(imageUrlFile);
+
+    return {
         // @ts-ignore
-        // const mimType: "image/jpeg" | "image/png" | "image/gif" | "image/webp" = parts[0].split(':')[1];
-        // const imageData = parts[1].split(',')[1];
+        common: uploadedImageData.data.url,
+        ...base,
+    }
+}
 
-
-        const msg = await anthropic.messages.create({
-            model: "claude-3-5-sonnet-20240620",
-            max_tokens: 500,
-            temperature: 1,
-            system: `You will be analyzing the image to determine if it contains a professional portfolio or resume
-
-                    Your task is determining whether the image contains a professional portfolio or resume. Analyze the text carefully, looking for elements typically found in resumes or portfolios such as contact information, work experience, education, skills, or project descriptions.
-                    
-                    If you determine that the image does contain a professional portfolio or resume, respond with "Yes" and analyze the content to find 6 areas for improvement. If you determine that the image does not contain a professional portfolio or resume, respond with "No".
-                    
-                    Format your response as JSON. Use the following structure:
-                    
-                    For a "Yes" response:
-                    [
-                      {
-                        "label": "Issue name",
-                        "text": "Issue solution with examples from this image"
-                      },
-                      ...
-                    ]
-                    
-                    For a "No" response:
-                    [
-                      {
-                        "error": true
-                      }
-                    ]
-                    
-                    Ensure you provide exactly 6 improvement suggestions for a "Yes" response. Each suggestion should be specific and actionable, referencing content from the image.
-                    
-                    Write your final answer. Do not include any explanation or reasoning outside of the JSON structure.
-                    
-                    [Your JSON response here]`,
-            // system: `Is it a professional portfolio or resume (choose on of these answers and send JSON answer)? 1. Yes - analyze this CV file and find improvements to maximize its professional impact. Send only JSON with 4 problems/issues (e.g. [{label: {Issue name}, text: {Issue solution with examples from this image}}]). 2. No - send me only JSON [{error: true}].`,
-            messages: [
+const openAiRequestIsImage = async (imageUrl: string, jobTitle: string, jobRequirements: string) => {
+    // @ts-ignore
+    const completion = await openai.chat.completions.create({
+        model: "gpt-5-nano",
+        response_format: { type: "json_object" },
+        temperature: 1,
+        messages: [
+            {
+            role: "user",
+            content: [
                 {
-                    role: "user",
-                    content: [
-                        {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": 'image/jpeg',
-                                "data": imageBase,
-                            },
-                        },
-                    ],
+                type: "text",
+                text: checkImagePromt(),
                 },
                 {
-                    role: "assistant",
-                    content: [
-                        {
-                            "type": "text",
-                            "text": "Here is JSON:\n[{",
-                        },
-                    ],
+                type: "image_url",
+                image_url: {
+                    url: imageUrl,
+                    detail: "low",
+                },
                 },
             ],
-        });
+            },
+        ],
+    });
 
-        // @ts-ignore
-        const aiAnswer = msg?.content[0]?.text && JSON.parse('[{' + msg.content[0].text);
+    // @ts-ignore
+    const aiAnswer = JSON.parse(jsonrepair(completion.choices[0].message.content));
 
-        if(aiAnswer?.[0]?.error) {
-            throw 'Sorry, our AI thinks there is no CV';
-        }
+    return {
+        usage: completion.usage,
+        data: aiAnswer,
+    }
+}
 
-        return NextResponse.json({
-            message: 'AI\'s answer',
-            data: aiAnswer,
-            aiData: msg,
-        }, { status: 201 });
-    } catch (e) {
-        return NextResponse.json({ error: Object.keys(e || {}).length ? e : 'Sorry, our AI went to sleep, please try again later' }, { status: 400 });
+const openAiRequest = async (types: string[], imageUrl: string, jobTitle: string, jobRequirements: string) => {
+    // @ts-ignore
+    const completion = await openai.chat.completions.create({
+        model: "gpt-4.1",
+        response_format: { "type": "json_object" },
+        temperature: 0,
+        messages: [
+            {
+                role: "user",
+                content: [
+                    {
+                        type: "image_url",
+                        image_url: {
+                            "url": imageUrl,
+                            "detail": "low",
+                        },
+                    },
+                    ...(types.includes('cv') ? [{ type: "text", text: cvImprovementsPromt() }] : []),
+                    ...(types.includes('coverLetter') ? [{ type: "text", text: coverLetterPromt(jobTitle, jobRequirements) }] : []),
+                    ...(types.includes('interview') ? [{ type: "text", text: interviewPromt(jobTitle, jobRequirements) }] : []),
+                ],
+            },
+        ],
+    });
+
+    // @ts-ignore
+    const aiAnswer = JSON.parse(jsonrepair(completion.choices[0].message.content));
+
+
+    return {
+        usage: completion.usage,
+        data: aiAnswer,
+    }
+}
+const updateUserData = async (userId: string) => {
+    const { updateUser, getUser } = DB();
+
+    const user = await getUser(userId);
+
+    const params = {
+        ...user,
+        isFree: false,
+        tokens: !!user.tokens ? user.tokens - 1 : 0,
     }
 
-    // chatGPT
-    // try {
-    //     const formData = new FormData()
-    //
-    //     // @ts-ignore
-    //     formData.append("image", imageFile)
-    //
-    //     const imageUploadData = await fetch(`https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=60`, {
-    //         method: 'POST',
-    //         body: formData,
-    //     })
-    //         .then(res => res?.json())
-    //         .catch(() => {
-    //             throw 'Image preparation error, please try again later'
-    //         })
-    //
-    //     if(!imageUploadData || imageUploadData?.error) {
-    //         throw 'Image preparation error, please try again later'
-    //     }
-    //
-    //     const imageUrl = imageUploadData?.data?.url;
-    //
-    //     try {
-    //         const completion = await openai.chat.completions.create({
-    //             messages: [
-    //                 {
-    //                     "role": "user",
-    //                     "content": [
-    //                         {
-    //                             "type": "text",
-    //                             "text": "Look CV write up to 5 short improvement/grammar about this CV, ONLY required format #{improvement name without number} ##{improvements text}, if you can\'t recognize CV text - send null",
-    //                         },
-    //                         {
-    //                             "type": "image_url",
-    //                             "image_url": {
-    //                                 "url": imageUrl,
-    //                                 "detail": "low",
-    //                             },
-    //                         },
-    //                     ],
-    //                 },
-    //             ],
-    //             model: "gpt-4o",
-    //             max_tokens: 150,
-    //         });
-    //
-    //         const answer = completion.choices[0]?.message?.content;
-    //
-    //         return NextResponse.json({
-    //             message: 'AI\'s answer',
-    //             data: answer,
-    //             aiData: completion,
-    //             imageUrl,
-    //         }, { status: 201 });
-    //     } catch (e) {
-    //         throw 'Sorry, our AI has a headache, please try again later'
-    //     }
-    // } catch (e) {
-    //     return NextResponse.json({ error: e }, { status: 400 });
-    // }
+    return await updateUser(params)
 }
+
+export const POST = isAuth(async function (req) {
+    const reqFormData = await req.formData();
+
+    try {
+        await isUserHasTokensHandler(req.auth?.user?.id);
+
+        const imageBase = await uploadImage(reqFormData);
+        const jobTitle = reqFormData.get('jobTitle');
+        const jobRequirements = reqFormData.get('jobRequirements');
+        const types = reqFormData.get('types');
+
+        const checkImage = await openAiRequestIsImage(imageBase.common, jobTitle, jobRequirements);
+
+        if(!checkImage.data.response) {
+            throw {
+                message: 'Please check your image, it must be your CV',
+                type: 'aiImage',
+            }
+        }
+
+        const aiAnswer = await openAiRequest(types, imageBase.common, jobTitle, jobRequirements)
+
+        const updatedUser = await updateUserData(req.auth?.user?.id);
+
+        return NextResponse.json({...aiAnswer, user: updatedUser}, { status: 201 });
+    } catch (e) {
+        // console.log(e)
+        return NextResponse.json({
+            error: Object.keys(e || {}).length ? e : DEFAULT_400,
+        }, { status: 400 });
+    }
+})
 
 export const runtime = "edge";

@@ -7,9 +7,10 @@ import styles from './style.module.scss';
 export const Footer = () => {
     return (
         <footer className={ styles.footer }>
-            <div className={ styles.footerWrapper }>
-                <p>© { new Date().getFullYear() } cvevo</p>
-                <p>by <LinkButton target={ '_blank' } text='Volodymyr Pastukh' href={ 'https://www.linkedin.com/in/pastukh/' }/></p>
+            <p>© { new Date().getFullYear() } cvevo</p>
+            <div className={ styles.links }>
+                <LinkButton ariaLabel={ 'Privacy policy page' } text='Privacy Policy' href={ '/privacy' }/>
+                <LinkButton ariaLabel={ 'Contact page' } text='Contact' href={ '/privacy#contact' }/>
             </div>
         </footer>
     );

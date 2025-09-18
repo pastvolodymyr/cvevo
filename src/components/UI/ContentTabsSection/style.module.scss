@@ -1,0 +1,92 @@
+.contentSection {
+  height: fit-content;
+
+  .contentTabs {
+    display: flex;
+
+    button {
+      display: flex;
+      align-items: center;
+      border: none;
+      background: #f6f5f5;
+      font-family: var(--font);
+      padding: 20px 30px;
+      border-radius: 20px 20px 0 0;
+      cursor: pointer;
+      transition: background var(--transition);
+
+      svg {
+        height: 18px;
+        width: 18px;
+        margin-top: -5px;
+        margin-right: 7px;
+      }
+
+      @media (max-width: 800px) {
+        svg {
+          margin-right: 0px;
+        }
+
+        padding: 20px 18px;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 400px) {
+        svg {
+          margin-top: -4px;
+          height: 15px;
+          width: 15px;
+        }
+      }
+    }
+
+    @media (max-width: 800px) {
+      overflow: auto;
+
+      span {
+        display: none;
+      }
+    }
+
+    .activeTab {
+      background: var(--white);
+      transition: background var(--transition);
+
+      @media (max-width: 800px) {
+        white-space: nowrap;
+        padding: 15px 15px;
+
+        svg {
+          margin-right: 7px;
+        }
+
+        span {
+          display: unset;
+        }
+      }
+
+      @media (max-width: 400px) {
+        width: 100%;
+        padding: 15px 12px;
+
+        svg {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+
+  .content {
+    padding: 40px 30px 30px 30px;
+    background: var(--white);
+    border-radius: 0px 15px 15px 15px;
+
+    @media (max-width: 800px) {
+      padding: 30px 20px 20px 20px;
+    }
+
+    @media (max-width: 400px) {
+      border-radius: 0px 0px 15px 15px;
+    }
+  }
+}

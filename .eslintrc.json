@@ -59,7 +59,6 @@
     "brace-style": ["warn", "1tbs", { "allowSingleLine": true }],
     "react/jsx-curly-spacing": ["warn", {"when": "always",  "spacing": { "objectLiterals": "never" }}],
     "no-var": "error",
-    "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
     "no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
     "no-process-env": "off",
     "no-unused-expressions": "off",

@@ -1,56 +1,83 @@
-.pricing {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+.heroBlock {
+  margin-top: 30px;
+  margin-bottom: 35px;
+  padding-bottom: 35px;
+  border-bottom: 1px dashed var(--secondary-color);
 
-  .pricingWrapper {
-    max-width: 1024px;
-    padding: 0 30px;
-    width: 100%;
+  h1 {
+    margin-bottom: 22px;
+  }
+  p {
+    max-width: 700px;
+  }
+}
 
-    .heroBlock {
-      margin-top: 30px;
+.plans {
+  .plansDescription {
+    h2 {
+      margin-bottom: 22px;
+    }
+
+    p {
       margin-bottom: 35px;
-      padding-bottom: 35px;
-      border-bottom: 1px dashed var(--secondary-color);
+      max-width: 800px;
+    }
+  }
 
-      h1 {
-        margin-bottom: 22px;
+  .plansBlock {
+    display: flex;
+
+    .planBlock {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      height: auto;
+
+      .planDescription {
+        flex: 1;
       }
-      p {
-        max-width: 700px;
+
+      .planSuggestion {
+        margin: 22px 0px;
+      }
+
+      h2 {
+        margin-bottom: 22px;
+
+        span {
+          font-size: inherit;
+        }
+      }
+
+      h3 {
+        font-size: 22px;
+        font-weight: 500;
+      }
+
+      &:first-child {
+        margin-right: 15px;
+      }
+
+      &:last-child {
+        margin-left: 15px;
+      }
+
+      @media (max-width: 768px) {
+        width: 100%;
+        margin-bottom: 20px;
+
+        &:first-child {
+          margin-right: 0px;
+        }
+
+        &:last-child {
+          margin-left: 0px;
+        }
       }
     }
 
-    .plans {
-      .plansDescription {
-        h2 {
-          margin-bottom: 22px;
-        }
-        p {
-          margin-bottom: 35px;
-          max-width: 800px;
-        }
-      }
-      .plansBlock {
-        display: flex;
-
-        h2 {
-          margin-bottom: 22px;
-        }
-
-        section {
-          width: 50%;
-
-          &:first-child {
-            margin-right: 15px;
-          }
-          &:last-child {
-            margin-left: 15px;
-          }
-        }
-      }
-
+    @media (max-width: 768px) {
+      flex-direction: column;
     }
   }
 }

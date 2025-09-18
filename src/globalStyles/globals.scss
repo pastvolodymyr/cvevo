@@ -9,10 +9,12 @@
   -moz-osx-font-smoothing: grayscale;
   color: var(--secondary-color);
   text-underline-offset: 0.25em;
+  box-sizing: border-box;
 }
 
 html {
   background: var(--primary-color);
+  min-width: 360px;
 }
 
 html, body {
@@ -21,12 +23,21 @@ html, body {
 }
 
 body {
-  display: flex;
   flex-direction: column;
+  display: flex;
+  align-items: center;
+  width: 100%;
 }
 
 main {
   flex: 1;
+  max-width: 1084px;
+  padding: 0 30px;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    padding: 0 20px;
+  }
 }
 
 @keyframes bgAnim {
@@ -66,16 +77,29 @@ ul, li {
 h1 {
   font-size: 36px;
   font-weight: 600;
+
+  @media (max-width: 768px) {
+    font-size: 30px;
+  }
 }
 
 h2 {
   font-size: 24px;
   font-weight: 600;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
 }
 
 p {
   font-size: 20px;
   line-height: 125%;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+    line-height: 120%;
+  }
 }
 
 a {

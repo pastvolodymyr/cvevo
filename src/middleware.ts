@@ -1,7 +1,9 @@
 import { auth } from '@/auth';
 
 export default auth(req => {
-    if (!req.auth) {
+    const url = new URL(req.url);
+
+    if (!req.auth && !url.searchParams.has('_rsc')) {
         const newUrl = new URL(`/api/signin?callbackUrl=${req.url}`, req.nextUrl.origin)
 
         return Response.redirect(newUrl)
@@ -9,9 +11,9 @@ export default auth(req => {
 })
 
 export const config = {
-    matcher: [ '/analyse', '/account' ],
-    unstable_allowDynamic: [
-        '/node_modules/mongoose/**',
+    matcher: [
+        '/analyse',
+        '/account',
     ],
 }
 

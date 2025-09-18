@@ -8,7 +8,7 @@ export const GET_USER_BY_ACCOUNTL_SQL = `
   WHERE a.providerAccountId = ? AND a.provider = ?`
 export const UPDATE_USER_BY_ID_SQL = `
   UPDATE users 
-  SET name = ?, email = ?
+  SET id = ?, name = ?, email = ?, tokens = ?, isFree = ?
   WHERE id = ? `
 export const DELETE_USER_SQL = `DELETE FROM users WHERE id = ?`
 

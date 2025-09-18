@@ -12,7 +12,7 @@ import '../globalStyles/globals.scss';
 const josefinSans = Josefin_Sans({ subsets: [ 'latin' ], variable: '--font' });
 
 export const metadata: Metadata = {
-    title: 'cvevo',
+    title: 'cvevo - AI-powered CV analysing tool',
     description: 'AI-powered CV enhancement tool',
 };
 
@@ -24,7 +24,7 @@ export default async function RootLayout({
     return (
         <html lang="en">
             <head>
-                <title>cvevo</title>
+                <title>cvevo - AI-powered CV analysing tool</title>
                 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
                 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
                 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
