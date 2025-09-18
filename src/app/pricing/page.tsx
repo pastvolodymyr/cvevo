@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Button, ContentSection } from '@/components/UI';
-import { Ads } from '@/components/Ads';
 
 import styles from './style.module.scss';
 
@@ -50,7 +49,6 @@ export default function Pricing() {
                     </ContentSection>
                 </section>
             </article>
-            <Ads />
         </>
     );
 }

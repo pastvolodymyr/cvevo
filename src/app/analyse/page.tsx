@@ -3,7 +3,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { CvAnalyser } from '@/components/CvAnalyser';
-import { Ads } from '@/components/Ads';
 import { LinkButton, Loader } from '@/components/UI';
 import { userSelector } from '@/store/selectors/user.selector';
 
@@ -28,7 +27,6 @@ export default function Analyse() {
                 <h2>You have {tokens} token (<LinkButton href={ '/pricing' } text={ 'Get more tokens' }/>)</h2>
             </header>
             <CvAnalyser />
-            <Ads />
         </>
     );
 }

@@ -1,7 +1,6 @@
 import { isAuth } from '@/app/api/middleware/isAuth';
 import { NextResponse } from 'next/server';
 import { DB } from '@/db';
-import Anthropic from '@anthropic-ai/sdk/index';
 import { jsonrepair } from 'jsonrepair'
 import OpenAI from "openai";
 import { coverLetterPromt, cvImprovementsPromt, interviewPromt, checkImagePromt } from '@/app/api/analyse/aiMessages';
@@ -13,10 +12,6 @@ const DEFAULT_400 = {
     type: 'ai',
 };
 const IMAGE_UPLOAD_LINK = `https://api.imgbb.com/1/upload?key=${process.env.IMGBB_API}&expiration=60`;
-
-const anthropic = new Anthropic({
-    apiKey: process.env.CLAUDE_API,
-});
 
 const detectImageType = (buffer: Buffer): string => {
     // Check the file signature (first few bytes) to determine the image type
@@ -108,48 +103,37 @@ const uploadImage = async (reqFormData: { get: (arg0: string) => any; }) => {
     }
 }
 
-const claudeRequest = async (imageBase: string, jobTitle: string, jobRequirements: string) => {
-    const claudeData = await anthropic.messages.create({
-        model: "claude-3-haiku-20240307",
-        max_tokens: 4000,
-        temperature: 0,
+const openAiRequestIsImage = async (imageUrl: string, jobTitle: string, jobRequirements: string) => {
+    // @ts-ignore
+    const completion = await openai.chat.completions.create({
+        model: "gpt-5-nano",
+        response_format: { type: "json_object" },
+        temperature: 1,
         messages: [
             {
-                role: "user",
-                content: [
-                    {
-                        "type": "text",
-                        "text": checkImagePromt(),
-                    },
-                    {
-                        "type": "image",
-                        "source": {
-                            "type": "base64",
-                            // @ts-ignore
-                            "media_type": imageBase.imageType,
-                            // @ts-ignore
-                            "data": imageBase.base64,
-                        },
-                    },
-                ],
-            },
-            {
-                role: "assistant",
-                content: [
-                    {
-                        "type": "text",
-                        "text": "Here is JSON:\n{",
-                    },
-                ],
+            role: "user",
+            content: [
+                {
+                type: "text",
+                text: checkImagePromt(),
+                },
+                {
+                type: "image_url",
+                image_url: {
+                    url: imageUrl,
+                    detail: "low",
+                },
+                },
+            ],
             },
         ],
-    })
+    });
 
     // @ts-ignore
-    const aiAnswer = JSON.parse(jsonrepair('{' + claudeData.content[0].text));
+    const aiAnswer = JSON.parse(jsonrepair(completion.choices[0].message.content));
 
     return {
-        usage: claudeData.usage,
+        usage: completion.usage,
         data: aiAnswer,
     }
 }
@@ -157,7 +141,7 @@ const claudeRequest = async (imageBase: string, jobTitle: string, jobRequirement
 const openAiRequest = async (types: string[], imageUrl: string, jobTitle: string, jobRequirements: string) => {
     // @ts-ignore
     const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-4.1",
         response_format: { "type": "json_object" },
         temperature: 0,
         messages: [
@@ -206,17 +190,15 @@ export const POST = isAuth(async function (req) {
     const reqFormData = await req.formData();
 
     try {
-        // await isUserHasTokensHandler(req.auth?.user?.id);
+        await isUserHasTokensHandler(req.auth?.user?.id);
 
         const imageBase = await uploadImage(reqFormData);
         const jobTitle = reqFormData.get('jobTitle');
         const jobRequirements = reqFormData.get('jobRequirements');
         const types = reqFormData.get('types');
 
-        // @ts-ignore
-        const checkImage = await claudeRequest(imageBase, jobTitle, jobRequirements);
+        const checkImage = await openAiRequestIsImage(imageBase.common, jobTitle, jobRequirements);
 
-        // @ts-ignore
         if(!checkImage.data.response) {
             throw {
                 message: 'Please check your image, it must be your CV',
@@ -226,9 +208,9 @@ export const POST = isAuth(async function (req) {
 
         const aiAnswer = await openAiRequest(types, imageBase.common, jobTitle, jobRequirements)
 
-        // const updatedUser = await updateUserData(req.auth?.user?.id);
+        const updatedUser = await updateUserData(req.auth?.user?.id);
 
-        return NextResponse.json(aiAnswer, { status: 201 });
+        return NextResponse.json({...aiAnswer, user: updatedUser}, { status: 201 });
     } catch (e) {
         // console.log(e)
         return NextResponse.json({

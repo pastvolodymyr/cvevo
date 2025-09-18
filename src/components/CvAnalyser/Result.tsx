@@ -8,7 +8,6 @@ import styles from '@/components/CvAnalyser/style.module.scss';
 
 export const Result = ({
     onReset,
-    onChangeStep,
     analyseResult,
 }: {
     onReset: () => void,
@@ -25,7 +24,6 @@ export const Result = ({
             <p>Be well-prepared and self-assured with tools designed to help you succeed</p>
             <div className={ styles.stepBlockThreeControls } style={{ display: 'flex' }}>
                 <Button icon={ 'RotateRight' } text={ 'Re-analyse' } onClick={ onReset }/>
-                <Button icon={ 'FileArrowDown' } text={ 'PDF' } onClick={ () => onChangeStep(1) }/>
             </div>
             <br/>
             <ContentTabsSection as='section' tabs={ [
@@ -73,7 +71,7 @@ export const Result = ({
                                         <div key={ index } className={ styles.interview }>
                                             <h2>{question}</h2>
                                             <p>{answer}</p>
-                                            <LinkButton aria-label={ `Recap - ${answer}` } href={ recapLink } text={ 'Recap Link' }/>
+                                            <LinkButton aria-label={ `Recap - ${answer}` } href={ recapLink } text={ 'Recap Link' } target='_blank'/>
                                         </div>
                                     ))
                                 }

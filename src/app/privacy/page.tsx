@@ -8,7 +8,7 @@ export default function Privacy() {
             <header className={ styles.heroBlock }>
                 <h1>Privacy Policy</h1>
                 <p>
-                    Effective Date: 17.07.24
+                    Effective Date: 17.04.2025
                 </p>
             </header>
             <article className={ styles.privacyContent }>

@@ -3,11 +3,13 @@ import cx from 'classnames';
 
 import { Button, Input } from '@/components/UI';
 import { validateFile } from '@/utils/helpers';
+import { updateUserData } from '@/store/slices/user.slice';
 
 import { StepTwo } from './StepTwo';
 import { Result } from './Result';
 
 import styles from './style.module.scss';
+import { useDispatch } from 'react-redux';
 
 export const CvAnalyser = () => {
     const [ error, setError ] = useState(null);
@@ -20,6 +22,8 @@ export const CvAnalyser = () => {
         jobTitle?: string,
         jobRequirements?: string,
     }>({})
+
+    const dispatch = useDispatch();
 
     const uploadRef = useRef<HTMLInputElement>(null);
 
@@ -56,19 +60,16 @@ export const CvAnalyser = () => {
             .then(res => res.json())
             .then(res => {
                 setAnalyseLoading(false)
-                // if(res.data && res.user && !res.error) {
-                //     // @ts-ignore
-                //     setCvImprovements(res.data);
-                //     // @ts-ignore
-                //     dispatch(updateUserData(res.user))
-                // }
-                // // @ts-ignore
-                // if(res.error) {
-                //     // @ts-ignore
-                //     setError(res.error);
-                // }
-
-                // console.log(res)
+                // @ts-ignore
+                if(res.data && res.user && !res.error) {
+                    // @ts-ignore
+                    dispatch(updateUserData(res.user))
+                }
+                // @ts-ignore
+                if(res.error) {
+                    // @ts-ignore
+                    setError(res.error);
+                }
 
                 // @ts-ignore
                 if(res.error) {

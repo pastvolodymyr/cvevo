@@ -2,10 +2,6 @@ import React from 'react';
 import Link from 'next/link';
 
 import { Button, ContentSection, Icon } from '@/components/UI';
-import CvAnalyseIcon from '@/svg/cv_analyse.svg';
-import CoverIcon from '@/svg/cover.svg';
-import QuestionIcon from '@/svg/question.svg';
-import { Ads } from '@/components/Ads';
 
 import styles from './style.module.scss';
 
@@ -70,7 +66,6 @@ export default function Home() {
                     </p>
                 </ContentSection>
             </article>
-            <Ads />
         </>
     );
 }

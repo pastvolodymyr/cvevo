@@ -3,7 +3,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { ContentSection } from '@/components/UI';
-import { Ads } from '@/components/Ads';
 import { userSelector } from '@/store/selectors/user.selector';
 
 import styles from './style.module.scss';
@@ -52,7 +51,6 @@ export default function Account() {
                     </ContentSection>
                 </section>
             </article>
-            <Ads />
         </>
     );
 }
