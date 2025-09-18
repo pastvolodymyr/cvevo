@@ -11,7 +11,6 @@ export const Result = ({
     analyseResult,
 }: {
     onReset: () => void,
-    onChangeStep: (step: number) => void,
     analyseResult: {
         cv: any,
         coverLetter: any,
