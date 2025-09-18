@@ -34,7 +34,6 @@ export default async function RootLayout({
                 <meta name="msapplication-TileColor" content="#da532c" />
                 <meta name="theme-color" content="#D9D9D9" />
             </head>
-
             <body className={ josefinSans.className }>
                 <div className='bgAnimation'>
                     <StarBg viewBox="0 0 1115 1002"/>
