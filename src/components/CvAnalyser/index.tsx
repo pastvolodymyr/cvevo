@@ -101,16 +101,14 @@ export const CvAnalyser = () => {
             'image/jpeg',
             'image/png',
             'application/pdf',
-        ], 30 * 1024 * 1024, file)
+        ], 3 * 1024 * 1024, file)
+
+        onChangeField('file', file);
 
         if(!fileValid.isValid) {
             // @ts-ignore
             setError(fileValid.message);
-
-            return
         }
-
-        onChangeField('file', file);
     };
     const openUploadWindow = () => uploadRef.current?.click();
     const UploadFileInvisible = () => <input
@@ -162,7 +160,7 @@ export const CvAnalyser = () => {
                 />
 
                 <Button
-                    disabled={ !fieldsData.jobTitle || !fieldsData.jobRequirements || !fieldsData.file }
+                    disabled={  !!error || !fieldsData.jobTitle || !fieldsData.jobRequirements || !fieldsData.file }
                     className={ styles.stepBlockTwoSubmit }
                     text={ 'Save details' }
                     onClick={ () => onChangeStep(2) }
