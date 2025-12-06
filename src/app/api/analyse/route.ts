@@ -106,7 +106,7 @@ const uploadImage = async (reqFormData: { get: (arg0: string) => any; }) => {
 const openAiRequestIsImage = async (imageUrl: string, jobTitle: string, jobRequirements: string) => {
     // @ts-ignore
     const completion = await openai.chat.completions.create({
-        model: "gpt-5-nano",
+        model: "gpt-4.1",
         response_format: { type: "json_object" },
         temperature: 1,
         messages: [
